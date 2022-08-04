@@ -1,6 +1,4 @@
-import pyperclip
-
-
+# helper functions
 def fusion_coords(coords: tuple[int, int]) -> tuple[int, int]:
     """Converts x, y coords into Fusion flow scale"""
     x, y = coords
@@ -11,12 +9,26 @@ def fusion_point(x: float, y: float) -> str:
     return f"{{ {x}, {y} }}"
 
 
-def add_inputs(**inputs: dict[str, str | int]) -> str:
+# tools and inputs creation
+def add_tool(
+    tool_id: str, tool_name: str, position: tuple[int, int] = (0, 0), inputs: str = ""
+) -> str:
+    """Creates a Fusion tool"""
+    x, y = fusion_coords(position)
+    tool = (
+        f"\t\t{tool_name} = {tool_id} {{\n\t\t\tInputs = {{\t\t\t\t{inputs}\n\t\t\t}},"
+        f"\n\t\t\tViewInfo = OperatorInfo {{ Pos = {{ {x}, {y} }} }},\n\t\t}},\n"
+    )
+    return tool
+
+
+def add_inputs(**inputs: dict[str, float | int | str]) -> str:
     """Creates strings for adding inputs to Fusion tools"""
 
     result = ""
     for key, value in inputs.items():
         result += f"\n\t\t\t\t{key} = Input {{ Value = {value}, }},"
+
     return result
 
 
@@ -26,28 +38,14 @@ def add_source_input(input: str, tool_name: str, tool_output: str) -> str:
     e.g from a Mask or a Spline
     """
 
-    result = f'\n\t\t\t\t{input} = Input {{\n\t\t\t\t\tSourceOp = "{tool_name}",\n\t\t\t\t\tSource = "{tool_output}", }},'
+    result = (
+        f'\n\t\t\t\t{input} = Input {{\n\t\t\t\t\tSourceOp = "{tool_name}",'
+        f'\n\t\t\t\t\tSource = "{tool_output}", }},'
+    )
     return result
 
 
-def add_tool(
-    tool_id: str, tool_name: str, position: tuple[int, int] = (0, 0), inputs: str = ""
-) -> str:
-    """Creates a Fusion tool"""
-    x, y = fusion_coords(position)
-    tool = f"\t\t{tool_name} = {tool_id} {{\n\t\t\tInputs = {{\t\t\t\t{inputs}\n\t\t\t}},\n\t\t\tViewInfo = OperatorInfo {{ Pos = {{ {x}, {y} }} }},\n\t\t}},\n"  # The f-string way
-    return tool
-
-
-def wrap_for_fusion(tools: str, last_tool_name: str = "") -> str:
-    """Adds header and footer to a sequence of tools"""
-
-    header = "{\n\tTools = ordered() {\n"
-    footer = f'\t}},\n\tActiveTool = "{last_tool_name}"\n}}'
-
-    return header + tools + footer
-
-
+# animations
 def add_spline(
     tool_name: str,
     input_name: str,
@@ -57,8 +55,11 @@ def add_spline(
     """Creates a spline for an input in a tool."""
     r, g, b = spline_color
 
-    spline = f"\t\t{tool_name}{input_name} = BezierSpline {{\n\t\t\tSplineColor = {{ Red = {r}, Green = {g}, Blue = {b} }},\n\t\t\tKeyFrames = {{\n{keyframes}\t\t\t}}\n\t\t}},\n"
-
+    spline = (
+        f"\t\t{tool_name}{input_name} = BezierSpline {{\n\t\t\t"
+        f"SplineColor = {{ Red = {r}, Green = {g}, Blue = {b} }},"
+        f"\n\t\t\tKeyFrames = {{\n{keyframes}\t\t\t}}\n\t\t}},\n"
+    )
     return spline
 
 
@@ -133,6 +134,16 @@ def animate(
     return kfs
 
 
+# wrapping
+def wrap_for_fusion(tools: str, last_tool_name: str = "") -> str:
+    """Adds header and footer to a sequence of tools"""
+
+    header = "{\n\tTools = ordered() {\n"
+    footer = f'\t}},\n\tActiveTool = "{last_tool_name}"\n}}'
+
+    return header + tools + footer
+
+
 # testing area
 def test():
 
@@ -169,8 +180,7 @@ def test():
 
     tools = wrap_for_fusion(tools, "Merge1")
 
-    pyperclip.copy(tools)
-    print(fusion_point(0.5, 0.5))
+    print(tools)
 
 
 if __name__ == "__main__":
