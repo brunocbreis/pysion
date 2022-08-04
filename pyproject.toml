@@ -19,5 +19,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = ""
-"Bug Tracker" = ""
+"Homepage" = "https://github.com/brunocbreis/pysion"
+"Bug Tracker" = "https://github.com/brunocbreis/pysion/issues"

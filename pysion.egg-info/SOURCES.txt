@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+pysion.egg-info/PKG-INFO
+pysion.egg-info/SOURCES.txt
+pysion.egg-info/dependency_links.txt
+pysion.egg-info/not-zip-safe
+pysion.egg-info/top_level.txt
