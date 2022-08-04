@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from typing import Protocol
 
 
@@ -9,8 +10,6 @@ class Curve(Protocol):
 
 
 class EaseInOut:
-    KEYFRAMES: int = 2
-
     def __init__(
         self,
         start_frame: int,
@@ -19,22 +18,55 @@ class EaseInOut:
         end_value: float,
         intensity: float = 1 / 3,
     ) -> None:
-        self.start_frame = start_frame
-        self.end_frame = end_frame
-        self.start_value = start_value
-        self.end_value = end_value
+        self.keyframes: list[int] = []
+        self.keyframes.append(start_frame)
+        self.keyframes.append(end_frame)
+
+        self.values: list[float] = []
+        self.values.append(start_value)
+        self.values.append(end_value)
+
         self.intensity = intensity
 
+        self._right_handles: list[tuple[float, float]] = None
+        self._left_handles: list[tuple[float, float]] = None
+
+        self.compute()
+
     def compute(self):
+        if self._right_handles is None:
+            self._right_handles = []
+        if self._left_handles is None:
+            self._left_handles = []
+
         right_handle = self.calc_ease_out()
         left_handle = self.calc_ease_in()
+        self._right_handles.append(right_handle)
+        self._left_handles.append(left_handle)
         ...
+
+    def first_keyframe(self) -> str:
+        kf = add_keyframe_manual(
+            self.keyframes[0], self.values[0], right_handle=self._right_handles[0]
+        )
+        return kf
+
+    def last_keyframe(self) -> str:
+        kf = add_keyframe_manual(
+            self.keyframes[-1], self.values[-1], left_handle=self._left_handles[-1]
+        )
+        return kf
+
+    def middle_keyframes(self) -> str:
+        if len(self.keyframes) <= 2:
+            return ""
+        return ""
 
     def calc_ease_out(self) -> tuple[float, float]:
         """Returns the right handle coords of the first keyframe as a tuple (x, y)"""
 
-        t0, t1 = self.start_frame, self.end_frame
-        v0 = self.start_value
+        t0, t1 = self.keyframes
+        v0 = self.values[0]
         intensity = self.intensity
 
         x_offset = t0
@@ -47,8 +79,8 @@ class EaseInOut:
     def calc_ease_in(self) -> tuple[float, float]:
         """Returns the left handle coords of the second keyframe as a tuple (x, y)"""
 
-        t0, t1 = self.start_frame, self.end_frame
-        v1 = self.end_value
+        t0, t1 = self.keyframes
+        v1 = self.values[1]
         intensity = self.intensity
 
         x_amp = t1 - t0
@@ -57,12 +89,8 @@ class EaseInOut:
         y = v1
         return x, y
 
-    def get_keyframes(self):
-        keyframes = ""
-        for kf in range(self.KEYFRAMES):
-            if kf == 0:
-                ...
-            ...
+    def generate(self) -> str:
+        return self.first_keyframe() + self.middle_keyframes() + self.last_keyframe()
 
 
 class Linear:
@@ -107,7 +135,7 @@ def add_spline(
 ) -> str:
     """Creates a spline for an input in a tool."""
     r, g, b = spline_color
-
+    keyframes = animation.generate()
     spline = (
         f"\t\t{tool_name}{input_name} = BezierSpline {{\n\t\t\t"
         f"SplineColor = {{ Red = {r}, Green = {g}, Blue = {b} }},"
@@ -185,3 +213,7 @@ def animate(
     ) + add_keyframe_manual(frames[1], values[1], left_handle=ease_in)
 
     return kfs
+
+
+# so what i have to do is
+#
