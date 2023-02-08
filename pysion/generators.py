@@ -60,7 +60,6 @@ def add_published_polyline(
         "\n\t\t\t\t\t\tPoints = {"
     )
     joint = "\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t},"
-    tail = "\t\t\t},"
 
     point_ids = "".join([_point_id(i, point_name) for i, _ in enumerate(points)])
 
@@ -73,7 +72,7 @@ def add_published_polyline(
         )
     )
 
-    return head + point_ids + joint + point_data + tail
+    return head + point_ids + joint + point_data
 
 
 def _point_id(index: int, name: str = "Point") -> str:
