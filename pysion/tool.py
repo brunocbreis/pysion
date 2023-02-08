@@ -31,12 +31,18 @@ class Tool:
         for k, v in kwargs.items():
             self._inputs[k] = v
 
+        return self
+
     @property
     def source_inputs(self):
         return self._source_inputs
 
-    def add_source_input(self, input: str, tool_name: str, tool_output: str) -> None:
+    def add_source_input(self, input: str, tool_name: str, tool_output: str):
         self._source_inputs[input] = (tool_name, tool_output)
+
+        return self
 
     def add_mask(self, mask_name: str):
         self.add_source_input("EffectMask", mask_name, "Mask")
+
+        return self
