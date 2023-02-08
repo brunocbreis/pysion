@@ -1,15 +1,4 @@
 from .utils import fusion_coords, fusion_point
-from typing import Protocol
-
-
-class Operator(Protocol):
-    @property
-    def id(self) -> str:
-        pass
-
-    @property
-    def name(self) -> str:
-        pass
 
 
 def add_tool(
