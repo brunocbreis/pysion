@@ -1,7 +1,7 @@
 from .utils import fusion_coords, fusion_point
 
 
-def add_tool(
+def generate_tool(
     tool_id: str, tool_name: str, inputs: str = "", position: tuple[int, int] = (0, 0)
 ) -> str:
     """Creates a Fusion tool"""
@@ -13,7 +13,7 @@ def add_tool(
     return tool
 
 
-def add_inputs(**inputs: dict[str, float | int | str]) -> str:
+def generate_inputs(**inputs: dict[str, float | int | str]) -> str:
     """Creates strings for adding inputs to Fusion tools"""
 
     result = ""
@@ -23,7 +23,9 @@ def add_inputs(**inputs: dict[str, float | int | str]) -> str:
     return result
 
 
-def add_source_input(input: str, tool_name: str, tool_output: str = "Output") -> str:
+def generate_source_input(
+    input: str, tool_name: str, tool_output: str = "Output"
+) -> str:
     """
     Creates string for tools that get Inputs from other tools,
     e.g from a Mask or to a Merge
@@ -36,11 +38,43 @@ def add_source_input(input: str, tool_name: str, tool_output: str = "Output") ->
     return result
 
 
-def add_mask(mask_name: str) -> str:
-    return add_source_input("EffectMask", mask_name, "Mask")
+def generate_mask(mask_name: str) -> str:
+    return generate_source_input("EffectMask", mask_name, "Mask")
 
 
-def add_published_polyline(
+def generate_instance_input(
+    instance_name: str,
+    source_op: str,
+    source_input: str,
+    default: str | int | float = "",
+    **inputs,
+) -> str:
+    if default:
+        if type(default) is str:
+            default = f'\n\t\t\t\t\tDefault = "{default}",'
+        else:
+            default = f"\n\t\t\t\t\tDefault = {default},"
+
+    if inputs:
+        inps = "".join(
+            [
+                f'\n\t\t\t\t\t{k} = "{v}",'
+                if type(v) is str
+                else f"\n\t\t\t\t\t{k} = {v},"
+                for (k, v) in inputs.items()
+            ]
+        )
+
+    else:
+        inps = ""
+
+    return (
+        f'\n\t\t\t\t{instance_name} = InstanceInput {{\n\t\t\t\t\tSourceOp = "{source_op}",'
+        f'\n\t\t\t\t\tSource = "{source_input}",{default}{inps}\n\t\t\t\t}},'
+    )
+
+
+def generate_published_polyline(
     points: list[tuple[float, float]], point_name: str = "Point"
 ) -> str:
     head = (
@@ -53,7 +87,7 @@ def add_published_polyline(
     point_ids = "".join([_point_id(i, point_name) for i, _ in enumerate(points)])
 
     point_data = "".join(
-        add_inputs(
+        generate_inputs(
             **{
                 f"{point_name}{i}": fusion_point(p[0], p[1])
                 for i, p in enumerate(points)

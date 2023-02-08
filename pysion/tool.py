@@ -1,4 +1,10 @@
-from .generators import add_tool, add_inputs, add_source_input, add_published_polyline
+from .generators import (
+    generate_tool,
+    generate_inputs,
+    generate_source_input,
+    generate_published_polyline,
+    generate_instance_input,
+)
 from dataclasses import dataclass
 
 
@@ -17,14 +23,18 @@ class Tool:
         source_inputs = ""
         if self.source_inputs:
             for k, v in self.source_inputs.items():
-                source_inputs += add_source_input(k, v[0], v[1])
+                source_inputs += generate_source_input(k, v[0], v[1])
 
-        return add_tool(
+        return generate_tool(
             self.id,
             self.name,
-            add_inputs(**self.inputs) + source_inputs + self.polyline,
+            generate_inputs(**self.inputs) + source_inputs + self.polyline,
             self.position,
         )
+
+    @property
+    def string(self) -> str:
+        return self.__str__()
 
     @property
     def inputs(self):
@@ -53,10 +63,35 @@ class Tool:
     def add_published_polyline(
         self, points: list[tuple[float, float]], point_name: str = "Point"
     ):
-        self._polyline += add_published_polyline(points, point_name)
+        self._polyline += generate_published_polyline(points, point_name)
 
         return self
 
     @property
     def polyline(self) -> str:
         return self._polyline
+
+
+@dataclass
+class Macro:
+    name: str
+    tools: list[Tool]
+    position: tuple[int, int] = (0, 0)
+
+    def __post_init__(self):
+        self.id: str = "MacroOperator"
+        self._instanced_inputs: list[str] = []
+
+    def add_instance_input(
+        self,
+        instance_name: str,
+        source_op: str,
+        source_input: str,
+        default: str | int | float = "",
+        **inputs
+    ):
+        self._instanced_inputs.append(
+            generate_instance_input(
+                instance_name, source_op, source_input, default, **inputs
+            )
+        )
