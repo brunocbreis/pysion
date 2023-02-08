@@ -62,7 +62,7 @@ def add_published_polyline(
     joint = "\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t},"
     tail = "\t\t\t},"
 
-    point_ids = "".join([_point_id(i, point_name) for i in range(points)])
+    point_ids = "".join([_point_id(i, point_name) for i, _ in enumerate(points)])
 
     point_data = "".join(
         add_inputs(
