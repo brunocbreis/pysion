@@ -36,15 +36,6 @@ def add_source_input(input: str, tool_name: str, tool_output: str) -> str:
     return result
 
 
-def add_spline_input(tool_name: str, input: str) -> str:
-
-    result = (
-        f'\n\t\t\t\t{input} = Input {{\n\t\t\t\t\tSourceOp = "{tool_name + input}",'
-        f'\n\t\t\t\t\tSource = "Value", }},'
-    )
-    return result
-
-
 def wrap_for_fusion(tools: str, last_tool_name: str = "") -> str:
     """Adds header and footer to a sequence of tools"""
 
