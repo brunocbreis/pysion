@@ -66,7 +66,10 @@ def add_published_polyline(
 
     point_data = "".join(
         add_inputs(
-            **{point_name + i: fusion_point(p[0], p[1]) for i, p in enumerate(points)}
+            **{
+                f"{point_name}{i}": fusion_point(p[0], p[1])
+                for i, p in enumerate(points)
+            }
         )
     )
 
