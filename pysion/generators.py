@@ -38,12 +38,3 @@ def add_source_input(input: str, tool_name: str, tool_output: str) -> str:
 
 def add_mask(mask_name: str) -> str:
     return add_source_input("EffectMask", mask_name, "Mask")
-
-
-def wrap_for_fusion(tools: str, last_tool_name: str = "") -> str:
-    """Adds header and footer to a sequence of tools"""
-
-    header = "{\n\tTools = ordered() {\n"
-    footer = f'\t}},\n\tActiveTool = "{last_tool_name}"\n}}'
-
-    return header + tools + footer
