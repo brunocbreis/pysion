@@ -8,5 +8,5 @@ def fusion_point(x: float, y: float) -> str:
     return f"{{ {x}, {y} }}"
 
 
-def kf_pairs(keyframes: list[int]) -> zip[tuple[int, int]]:
+def kf_pairs(keyframes: list[int]) -> zip:
     return zip(keyframes, keyframes[1:])
