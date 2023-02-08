@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 def fusion_coords(coords: tuple[int, int]) -> tuple[int, int]:
     """Converts x, y coords into Fusion flow scale"""
     x, y = coords
