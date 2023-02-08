@@ -1,6 +1,5 @@
 LICENSE
 README.md
-pyproject.toml
 setup.py
 pysion.egg-info/PKG-INFO
 pysion.egg-info/SOURCES.txt
