@@ -1,4 +1,4 @@
-from .generators import add_tool, add_inputs, add_source_input, wrap_for_fusion
+from .generators import add_tool, add_inputs, add_source_input
 from dataclasses import dataclass
 
 
@@ -40,19 +40,3 @@ class Tool:
 
     def add_mask(self, mask_name: str):
         self.add_source_input("EffectMask", mask_name, "Mask")
-
-
-def test():
-    bg = Tool("Background", "Background1")
-    bg.add_inputs(TopLeftRed=1, TopLeftGreen=0.5, TopLeftBlue=0.2)
-    bg.add_mask("Rectangle1")
-
-    mask = Tool("RectangleMask", "Rectangle1", (0, 1))
-
-    tools = wrap_for_fusion(str(bg) + str(mask), bg.name)
-
-    print(tools)
-
-
-if __name__ == "__main__":
-    test()
