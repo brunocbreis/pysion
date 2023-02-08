@@ -31,7 +31,7 @@ def add_source_input(input: str, tool_name: str, tool_output: str) -> str:
 
     result = (
         f'\n\t\t\t\t{input} = Input {{\n\t\t\t\t\tSourceOp = "{tool_name}",'
-        f'\n\t\t\t\t\tSource = "{tool_output}", }},'
+        f'\n\t\t\t\t\tSource = "{tool_output}",\n\t\t\t\t}},'
     )
     return result
 
