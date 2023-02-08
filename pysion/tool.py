@@ -1,4 +1,4 @@
-from .generators import add_tool, add_inputs, add_source_input
+from .generators import add_tool, add_inputs, add_source_input, add_published_polyline
 from dataclasses import dataclass
 
 
@@ -11,7 +11,7 @@ class Tool:
     def __post_init__(self):
         self._inputs: dict[str, int | float | str] = {}
         self._source_inputs: dict[str, tuple[str, str]] = {}
-        self.mask = ""
+        self._polyline: str = ""
 
     def __str__(self) -> str:
         source_inputs = ""
@@ -20,7 +20,10 @@ class Tool:
                 source_inputs += add_source_input(k, v[0], v[1])
 
         return add_tool(
-            self.id, self.name, add_inputs(**self.inputs) + source_inputs, self.position
+            self.id,
+            self.name,
+            add_inputs(**self.inputs) + source_inputs + self.polyline,
+            self.position,
         )
 
     @property
@@ -46,3 +49,14 @@ class Tool:
         self.add_source_input("EffectMask", mask_name, "Mask")
 
         return self
+
+    def add_published_polyline(
+        self, points: list[tuple[float, float]], point_name: str = "Point"
+    ):
+        self._polyline += add_published_polyline(points, point_name)
+
+        return self
+
+    @property
+    def polyline(self) -> str:
+        return self._polyline
