@@ -1,12 +1,22 @@
-from .tool import Tool
+from typing import Protocol
 
 
-def wrap_for_fusion(tools: list[Tool]) -> str:
+class Operator(Protocol):
+    @property
+    def name(self) -> str:
+        pass
+
+    @property
+    def string(self) -> str:
+        pass
+
+
+def wrap_for_fusion(operators: list[Operator]) -> str:
     """Adds header and footer to a sequence of tools"""
 
-    tools_string = "".join([str(tool) for tool in tools])
+    ops_string = "".join([op.string for op in operators])
 
     header = "{\n\tTools = ordered() {\n"
-    footer = f'\t}},\n\tActiveTool = "{tools[-1].name}"\n}}'
+    footer = f'\t}},\n\tActiveTool = "{operators[-1].name}"\n}}'
 
-    return header + tools_string + footer
+    return header + ops_string + footer
