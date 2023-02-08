@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from .generators import generate_inputs, generate_instance_input
+from .generators import generate_inputs, generate_instance_input, generate_source_input
 
 
 @dataclass
@@ -34,3 +34,31 @@ class Input:
             self.default,
             **self.instance_properties,
         )
+
+
+@dataclass
+class SourceInput:
+    parent: str
+    name: str
+    source_operator: str
+    source_output: str = "Output"
+
+    @property
+    def string(self) -> str:
+        return generate_source_input(
+            self.name, self.source_operator, self.source_output
+        )
+
+
+@dataclass
+class MaskInput(SourceInput):
+    parent: str
+    source_operator: str
+
+    def __post_init__(self):
+        self.source_output: str = "Mask"
+        self.name: str = "EffectMask"
+
+    @property
+    def string(self) -> str:
+        return super().string
