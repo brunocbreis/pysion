@@ -55,7 +55,7 @@ def add_published_polyline(
     points: list[tuple[float, float]], point_name: str = "Point"
 ) -> str:
     head = (
-        "\t\t\t\tPolyline = Input {"
+        "\n\t\t\t\tPolyline = Input {"
         "\n\t\t\t\t\tValue = Polyline {"
         "\n\t\t\t\t\t\tPoints = {"
     )
