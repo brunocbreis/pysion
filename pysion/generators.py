@@ -1,4 +1,15 @@
 from .utils import fusion_coords, fusion_point
+from typing import Protocol
+
+
+class Operator(Protocol):
+    @property
+    def id(self) -> str:
+        pass
+
+    @property
+    def name(self) -> str:
+        pass
 
 
 def add_tool(
@@ -23,7 +34,7 @@ def add_inputs(**inputs: dict[str, float | int | str]) -> str:
     return result
 
 
-def add_source_input(input: str, tool_name: str, tool_output: str) -> str:
+def add_source_input(input: str, tool_name: str, tool_output: str = "Output") -> str:
     """
     Creates string for tools that get Inputs from other tools,
     e.g from a Mask or to a Merge
