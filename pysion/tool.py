@@ -1,7 +1,4 @@
-from .generators import (
-    generate_tool,
-    generate_published_polyline,
-)
+from .generators import generate_tool
 from dataclasses import dataclass
 from .input import Input, SourceInput, MaskInput, Polyline
 
