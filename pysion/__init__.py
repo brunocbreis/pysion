@@ -6,3 +6,4 @@ from .generators import (
     add_mask,
 )
 from .utils import fusion_coords, fusion_point, kf_pairs
+from .tool import Tool
