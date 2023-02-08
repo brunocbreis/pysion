@@ -49,3 +49,29 @@ def add_source_input(input: str, tool_name: str, tool_output: str = "Output") ->
 
 def add_mask(mask_name: str) -> str:
     return add_source_input("EffectMask", mask_name, "Mask")
+
+
+def add_published_polyline(
+    points: list[tuple[float, float]], point_name: str = "Point"
+) -> str:
+    head = (
+        "\t\t\t\tPolyline = Input {"
+        "\n\t\t\t\t\tValue = Polyline {"
+        "\n\t\t\t\t\t\tPoints = {"
+    )
+    joint = "\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t},"
+    tail = "\t\t\t},"
+
+    point_ids = "".join([_point_id(i, point_name) for i in range(points)])
+
+    point_data = "".join(
+        add_inputs(
+            **{point_name + i: fusion_point(p[0], p[1]) for i, p in enumerate(points)}
+        )
+    )
+
+    return head + point_ids + joint + point_data + tail
+
+
+def _point_id(index: int, name: str = "Point") -> str:
+    return f'\n\t\t\t\t\t\t\t{{ PublishID = "{name}{index}" }},'
