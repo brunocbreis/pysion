@@ -3,4 +3,4 @@
 build/
 dist/
 **/__pycache__/
-/pysion.egg-info
+/pysion.egg-info/
