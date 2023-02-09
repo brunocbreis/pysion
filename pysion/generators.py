@@ -1,4 +1,5 @@
 from .utils import fusion_coords, fusion_point
+from typing import Literal
 
 # Tool
 def generate_tool(
@@ -14,12 +15,15 @@ def generate_tool(
 
 
 # Inputs
-def generate_inputs(**inputs: dict[str, float | int | str]) -> str:
+def generate_inputs(
+    type: Literal["Value", "Expression"] = "Value",
+    **inputs: dict[str, float | int | str],
+) -> str:
     """Creates strings for adding inputs to Fusion tools"""
 
     result = ""
     for key, value in inputs.items():
-        result += f"\n\t\t\t\t{key} = Input {{ Value = {value}, }},"
+        result += f"\n\t\t\t\t{key} = Input {{ {type} = {value}, }},"
 
     return result
 
