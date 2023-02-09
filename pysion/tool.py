@@ -1,6 +1,7 @@
 from .generators import generate_tool
 from dataclasses import dataclass
-from .input import Input, SourceInput, MaskInput, Polyline
+from .input import Input, SourceInput, MaskInput, Polyline, Output
+from .wrapper import wrap_for_macro
 
 
 @dataclass
@@ -10,12 +11,13 @@ class Tool:
     position: tuple[int, int] = (0, 0)
 
     def __post_init__(self):
-        self._inputs: list[Input]
-        self._source_inputs: list[SourceInput]
-        self._polylines: list[Polyline]
+        self._inputs: dict[str, Input] = {}
+        self._outputs: list[Output] = [Output(self.name)]
+        self._source_inputs: list[SourceInput] = []
+        self._polylines: list[Polyline] = []
 
     def __str__(self) -> str:
-        inputs = "".join([input.string for input in self.inputs])
+        inputs = "".join([input.string for input in self.inputs.values()])
         source_inputs = "".join([input.string for input in self.source_inputs])
         polylines = "".join([pl.string for pl in self.polylines])
 
@@ -36,7 +38,7 @@ class Tool:
 
     def add_inputs(self, **kwargs):
         for k, v in kwargs.items():
-            self._inputs.append(Input(self.name, k, v))
+            self._inputs[k] = Input(self.name, k, v)
 
         return self
 
@@ -77,15 +79,24 @@ class Macro:
     def __post_init__(self):
         self.id: str = "MacroOperator"
         self._instanced_inputs: list[Input] = []
+        self._instanced_outputs: list[Output] = []
 
     @property
     def instanced_inputs(self):
         return self._instanced_inputs
 
     @property
+    def instanced_outputs(self):
+        return self._instanced_outputs
+
+    @property
     def string(self):
-        instances = "".join([input.instance for input in self.instanced_inputs])
-        pass
+
+        instanced_inputs = "".join([ip.instance for ip in self.instanced_inputs])
+
+        instanced_outputs = "".join([op.instance for op in self.instanced_outputs])
+
+        return wrap_for_macro(self, instanced_inputs, instanced_outputs, self.tools)
 
     def add_instance_input(
         self, input: Input, default: str | int | float = "", **properties
@@ -94,3 +105,10 @@ class Macro:
         new_instance.default = default
         new_instance.instance_properties = properties
         self._instanced_inputs.append(new_instance)
+
+        return self
+
+    def add_instance_output(self, output: Output):
+        self._instanced_outputs.append(output)
+
+        return self

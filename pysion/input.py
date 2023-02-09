@@ -4,6 +4,7 @@ from .generators import (
     generate_instance_input,
     generate_source_input,
     generate_published_polyline,
+    generate_instance_output,
 )
 
 
@@ -79,3 +80,20 @@ class Polyline:
     def add_points(self, *points: list[tuple[float, float]]):
         for p in points:
             self.points.append(p)
+
+
+@dataclass
+class Output:
+    parent: str
+    name: str = "Output"
+    index: int = 0
+
+    def __post_init__(self):
+        if self.index:
+            self.instance_name = f"{self.name}{self.index}"
+        else:
+            self.instance_name = self.name
+
+    @property
+    def instance(self) -> str:
+        return generate_instance_output(self.parent, self.name, self.instance_name)

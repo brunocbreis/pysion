@@ -74,6 +74,15 @@ def generate_instance_input(
     )
 
 
+def generate_instance_output(
+    source_op: str, source_input: str = "Output", instance_name: str = "Output"
+) -> str:
+    return (
+        f'\n\t\t\t\t{instance_name} = InstanceOutput {{\n\t\t\t\t\tSourceOp = "{source_op}",'
+        f'\n\t\t\t\t\tSource = "{source_input}",\n\t\t\t\t}},'
+    )
+
+
 def generate_published_polyline(
     points: list[tuple[float, float]], point_name: str = "Point"
 ) -> str:
