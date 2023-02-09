@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .generators import generate_tool
 from dataclasses import dataclass
 from .input import Input, SourceInput, MaskInput, Polyline, Output
@@ -68,6 +69,16 @@ class Tool:
     @property
     def polylines(self) -> list[Polyline]:
         return self._polylines
+
+    @classmethod
+    def merge(
+        cls, name: str, bg: Tool, fg: Tool, position: tuple[int, int] = (0, 0)
+    ) -> Tool:
+        return (
+            Tool("Merge", name, position)
+            .add_source_input("Background", bg.name)
+            .add_source_input("Foreground", fg.name)
+        )
 
 
 @dataclass
