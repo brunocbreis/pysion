@@ -75,7 +75,7 @@ class Polyline:
 
     @property
     def string(self) -> str:
-        return generate_published_polyline(self.points, self.point_name)
+        return generate_published_polyline(self.points)
 
     def add_points(self, *points: list[tuple[float, float]]):
         for p in points:
