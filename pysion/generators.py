@@ -1,6 +1,6 @@
 from .utils import fusion_coords, fusion_point
 
-
+# Tool
 def generate_tool(
     tool_id: str, tool_name: str, inputs: str = "", position: tuple[int, int] = (0, 0)
 ) -> str:
@@ -13,6 +13,7 @@ def generate_tool(
     return tool
 
 
+# Inputs
 def generate_inputs(**inputs: dict[str, float | int | str]) -> str:
     """Creates strings for adding inputs to Fusion tools"""
 
@@ -42,6 +43,7 @@ def generate_mask(mask_name: str) -> str:
     return generate_source_input("EffectMask", mask_name, "Mask")
 
 
+# Instances for macros
 def generate_instance_input(
     instance_name: str,
     source_op: str,
@@ -83,28 +85,25 @@ def generate_instance_output(
     )
 
 
-def generate_published_polyline(
-    points: list[tuple[float, float]], point_name: str = "Point"
-) -> str:
-    head = (
-        "\n\t\t\t\tPolyline = Input {"
-        "\n\t\t\t\t\tValue = Polyline {"
-        "\n\t\t\t\t\t\tPoints = {"
-    )
-    joint = "\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t},"
+# Polylines
+def generate_published_polyline(points: list[tuple[float, float]]) -> str:
 
-    point_ids = "".join([_point_id(i, point_name) for i, _ in enumerate(points)])
-
+    polyline_input = generate_inputs(Polyline=_polyline_value(points))
     point_data = "".join(
         generate_inputs(
-            **{
-                f"{point_name}{i}": fusion_point(p[0], p[1])
-                for i, p in enumerate(points)
-            }
+            **{f"Point{i}": fusion_point(p[0], p[1]) for i, p in enumerate(points)}
         )
     )
 
-    return head + point_ids + joint + point_data
+    return polyline_input + point_data
+
+
+def _polyline_value(points: list[tuple[float, float]]) -> str:
+    header = "Polyline {\n\t\t\t\t\t\tPoints = {"
+    point_ids = "".join([_point_id(i, "Point") for i, _ in enumerate(points)])
+    footer = "\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t}"
+
+    return header + point_ids + footer
 
 
 def _point_id(index: int, name: str = "Point") -> str:
