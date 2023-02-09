@@ -10,3 +10,8 @@ def fusion_point(x: float, y: float) -> str:
 
 def kf_pairs(keyframes: list[int]) -> zip:
     return zip(keyframes, keyframes[1:])
+
+
+def fusion_string(string: str) -> str:
+    """Returns a string with added quotes"""
+    return f'"{string}"'
