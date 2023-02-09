@@ -3,6 +3,7 @@ from .generators import generate_tool
 from dataclasses import dataclass
 from .input import Input, SourceInput, MaskInput, Polyline, Output
 from .wrapper import wrap_for_macro
+from typing import Literal
 
 
 @dataclass
@@ -37,9 +38,9 @@ class Tool:
     def inputs(self):
         return self._inputs
 
-    def add_inputs(self, **kwargs):
+    def add_inputs(self, type: Literal["Value", "Expression"] = "Value", **kwargs):
         for k, v in kwargs.items():
-            self._inputs[k] = Input(self.name, k, v)
+            self._inputs[k] = Input(self.name, k, v, type)
 
         return self
 

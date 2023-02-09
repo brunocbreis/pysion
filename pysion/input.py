@@ -6,6 +6,8 @@ from .generators import (
     generate_published_polyline,
     generate_instance_output,
 )
+from typing import Literal
+from .utils import fusion_string
 
 
 @dataclass
@@ -13,10 +15,13 @@ class Input:
     parent: str
     name: str
     value: int | float | str
+    type: Literal["Value", "Expression"] = "Value"
 
     def __post_init__(self):
         self._instance_properties: dict[str, int | float | str] = {}
         self.default: int | float | str = ""
+        if self.type == "Expression":
+            self.value = fusion_string(self.value)
 
     @property
     def instance_properties(self) -> dict[str, int | float | str]:
@@ -29,7 +34,7 @@ class Input:
 
     @property
     def string(self) -> str:
-        return generate_inputs(**{self.name: self.value})
+        return generate_inputs(self.type, **{self.name: self.value})
 
     @property
     def instance(self) -> str:
