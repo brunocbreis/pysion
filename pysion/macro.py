@@ -85,5 +85,3 @@ class Macro:
     add_input = add_instance_input
     add_output = add_instance_output
     add_color = add_color_input
-    inputs = instanced_inputs
-    outputs = instanced_outputs
