@@ -78,6 +78,8 @@ class Tool:
     def merge(
         cls, name: str, bg: Tool, fg: Tool, position: tuple[int, int] = (0, 0)
     ) -> Tool:
+        """Creates a Merge tool and automatically sets source inputs to connect other nodes."""
+
         return (
             Tool("Merge", name, position)
             .add_source_input("Background", bg.name)
@@ -92,6 +94,8 @@ class Tool:
         resolution: tuple[int, int] | Literal["auto"] = "auto",
         position: tuple[int, int] = (0, 0),
     ) -> Tool:
+        """Creates a Background tool and automatically sets color and resolution inputs."""
+
         bg = Tool("Background", name, position).add_inputs(
             TopLeftRed=color.red,
             TopLeftGreen=color.green,
@@ -106,6 +110,17 @@ class Tool:
         return bg.add_inputs(
             UseFrameFormatSettings=0, Width=resolution[0], Height=resolution[1]
         )
+
+    @classmethod
+    def mask(
+        cls,
+        name: str,
+        type: Literal["Rectangle", "Ellipse", "Polyline", "BSpline"] = "Rectangle",
+        position: tuple[int, int] = (0, 0),
+    ) -> Tool:
+        """Creates a Mask tool and automatically sets the correct output name for a mask."""
+
+        return Tool(f"{type}Mask", name, position, [Output(name, "Mask")])
 
     # Method aliases
     bg = background
