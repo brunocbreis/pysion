@@ -28,3 +28,10 @@ class RGBA:
     green: float = 0
     blue: float = 0
     alpha: float = 1
+    premultiply = True
+
+    def __post_init__(self):
+        if self.premultiply:
+            self.red *= self.alpha
+            self.green *= self.alpha
+            self.blue *= self.alpha
