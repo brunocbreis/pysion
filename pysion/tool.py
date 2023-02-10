@@ -2,10 +2,8 @@ from __future__ import annotations
 from .generators import generate_tool
 from dataclasses import dataclass
 from .input import Input, SourceInput, MaskInput, Polyline, Output
-from .wrapper import wrap_for_macro
 from typing import Literal
 from .utils import RGBA
-from typing import Literal
 
 
 @dataclass
