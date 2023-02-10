@@ -20,6 +20,10 @@ def fusion_string(string: str) -> str:
     return f'"{string}"'
 
 
+def fu_id(name: str) -> str:
+    return f'FuID {{ "{name}" }}'
+
+
 @dataclass
 class RGBA:
     """Defines an RGB + Alpha color using 0 to 1 floats. Defaults to fully opaque black."""
