@@ -11,10 +11,13 @@ class Tool:
     id: str
     name: str
     position: tuple[int, int] = (0, 0)
+    outputs: list[Output] = None
 
     def __post_init__(self):
+        if not self.outputs:
+            self.outputs = [Output(self.name)]
+
         self._inputs: dict[str, Input] = {}
-        self._outputs: list[Output] = [Output(self.name)]
         self._source_inputs: list[SourceInput] = []
         self._polylines: list[Polyline] = []
 
@@ -37,10 +40,6 @@ class Tool:
     @property
     def inputs(self):
         return self._inputs
-
-    @property
-    def outputs(self):
-        return self._outputs
 
     def add_inputs(self, type: Literal["Value", "Expression"] = "Value", **kwargs):
         for k, v in kwargs.items():

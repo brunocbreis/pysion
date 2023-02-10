@@ -1,6 +1,6 @@
 from .tool import Tool
 from dataclasses import dataclass
-from input import Input, Output
+from .input import Input, Output
 from .wrapper import wrap_for_macro
 
 
@@ -9,11 +9,16 @@ class Macro:
     name: str
     tools: list[Tool]
     position: tuple[int, int] = (0, 0)
+    outputs: list[Output] = None
 
     def __post_init__(self):
         self.id: str = "MacroOperator"
         self._instanced_inputs: list[Input] = []
-        self._instanced_outputs: list[Output] = [self.tools[-1].outputs[0]]
+
+        if not self.outputs:
+            self._instanced_outputs: list[Output] = [self.tools[-1].outputs[0]]
+        else:
+            self._instanced_outputs: list[Output] = self.outputs
 
     @property
     def instanced_inputs(self):
@@ -42,7 +47,42 @@ class Macro:
 
         return self
 
-    def add_instance_output(self, output: Output):
-        self._instanced_outputs.append(output)
+    def add_instance_output(self, tool: Tool):
+        self._instanced_outputs += tool.outputs
 
         return self
+
+    def add_color_input(
+        self,
+        tool: Tool,
+        group: int = 1,
+        prefix: str = "TopLeft",
+        suffix: str = "",
+        **properties,
+    ):
+        """Adds all necessary color inputs as the same control group. If adding more than one, group should be incremented.
+        Different Prefixes and Suffixes are added to color inputs in Fusion. Backgrounds usually default to TopLeft[Color]
+        for solid fills. Text+ nodes have [Color]1, [Color]2 etc for different layers.
+        """
+
+        self.add_instance_input(
+            tool.inputs[f"{prefix}Red{suffix}"],
+            ControlGroup=group,
+            Name="Color",
+            **properties,
+        ).add_instance_input(
+            tool.inputs[f"{prefix}Green{suffix}"], ControlGroup=group, **properties
+        ).add_instance_input(
+            tool.inputs[f"{prefix}Blue{suffix}"], ControlGroup=group, **properties
+        ).add_instance_input(
+            tool.inputs[f"{prefix}Alpha{suffix}"], ControlGroup=group, **properties
+        )
+
+        return self
+
+    # Aliases
+    add_input = add_instance_input
+    add_output = add_instance_output
+    add_color = add_color_input
+    inputs = instanced_inputs
+    outputs = instanced_outputs
