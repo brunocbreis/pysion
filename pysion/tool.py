@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from .input import Input, SourceInput, MaskInput, Polyline, Output
 from .wrapper import wrap_for_macro
 from typing import Literal
+from .utils import RGBA
+from typing import Literal
 
 
 @dataclass
@@ -80,6 +82,33 @@ class Tool:
             .add_source_input("Background", bg.name)
             .add_source_input("Foreground", fg.name)
         )
+
+    @classmethod
+    def background(
+        cls,
+        name: str,
+        color: RGBA = RGBA(),
+        resolution: tuple[int, int] | Literal["auto"] = "auto",
+        position: tuple[int, int] = (0, 0),
+    ) -> Tool:
+        bg = Tool("Background", name, position).add_inputs(
+            TopLeftRed=color.red,
+            TopLeftGreen=color.green,
+            TopLeftBlue=color.blue,
+            TopLeftAlpha=color.alpha,
+        )
+
+        if resolution == "auto":
+            bg.add_inputs(UseFrameFormatSettings=1)
+            return bg
+
+        return bg.add_inputs(
+            UseFrameFormatSettings=0, Width=resolution[0], Height=resolution[1]
+        )
+
+    # Method aliases
+    bg = background
+    mrg = merge
 
 
 @dataclass
