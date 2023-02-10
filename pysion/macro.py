@@ -55,6 +55,7 @@ class Macro:
     def add_color_input(
         self,
         tool: Tool,
+        name: str = "Color",
         group: int = 1,
         prefix: str = "TopLeft",
         suffix: str = "",
@@ -68,7 +69,7 @@ class Macro:
         self.add_instance_input(
             tool.inputs[f"{prefix}Red{suffix}"],
             ControlGroup=group,
-            Name="Color",
+            Name=name,
             **properties,
         ).add_instance_input(
             tool.inputs[f"{prefix}Green{suffix}"], ControlGroup=group, **properties
