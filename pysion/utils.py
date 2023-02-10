@@ -32,7 +32,7 @@ class RGBA:
     green: float = 0
     blue: float = 0
     alpha: float = 1
-    premultiply = True
+    premultiply: bool = True
 
     def __post_init__(self):
         if self.premultiply:
