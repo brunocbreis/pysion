@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 def fusion_coords(coords: tuple[int, int]) -> tuple[int, int]:
     """Converts x, y coords into Fusion flow scale"""
     x, y = coords
@@ -15,3 +18,13 @@ def kf_pairs(keyframes: list[int]) -> zip:
 def fusion_string(string: str) -> str:
     """Returns a string with added quotes"""
     return f'"{string}"'
+
+
+@dataclass
+class RGBA:
+    """Defines an RGB + Alpha color using 0 to 1 floats. Defaults to fully opaque black."""
+
+    red: float = 0
+    green: float = 0
+    blue: float = 0
+    alpha: float = 1
