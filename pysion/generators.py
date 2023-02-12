@@ -1,17 +1,53 @@
 from .utils import fusion_coords, fusion_point
 from typing import Literal
 
+# General generators
+def generate(
+    name: str,
+    kind: str,
+    value_kind: str,
+    value: int | float | str,
+    indent_level: int = 0,
+    indent: str = "\t",
+    wrapper: bool = False,
+) -> str:
+    ind = indent_level * indent
+
+    if not wrapper:
+        return f"{ind}{name} = {kind} {{ {value_kind} = {value}, }}"
+
+    return f"{ind}{name} = {kind} {{ {value_kind} = {{\n{indent}{value}\n{ind}}}, }}"
+
+
+def named_table(
+    name: str,
+    kind: str,
+    content: str | int | float,
+    indent_level: int = 0,
+    indent: str = "\t",
+    line_break: bool = False,
+) -> str:
+    br = "\n" if line_break else ""
+    ind = indent * indent_level
+    return f"{ind}{name} = {kind} {{ {br}{content}{br+ind} }}"
+
+
 # Tool
 def generate_tool(
     tool_id: str, tool_name: str, inputs: str = "", position: tuple[int, int] = (0, 0)
 ) -> str:
     """Creates a Fusion tool"""
-    x, y = fusion_coords(position)
+
     tool = (
         f"\t\t{tool_name} = {tool_id} {{\n\t\t\tInputs = {{\t\t\t\t{inputs}\n\t\t\t}},"
-        f"\n\t\t\tViewInfo = OperatorInfo {{ Pos = {fusion_point(x,y)} }},\n\t\t}},\n"
+        f"\n\t\t\t{_view_info(position)}\n\t\t}},\n"
     )
     return tool
+
+
+def _view_info(position: tuple[int, int] = (0, 0)) -> str:
+    x, y = fusion_coords(position)
+    return f"ViewInfo = OperatorInfo {{ Pos = {fusion_point(x,y)} }},"
 
 
 # Inputs
