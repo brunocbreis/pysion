@@ -58,6 +58,23 @@ class Tool:
 
         return self
 
+    def add_color_input(self, color: RGBA, prefix: str = "", suffix: str = ""):
+        """Adds color input from RGBA. Different Prefixes and Suffixes are added to color inputs in Fusion.
+        Backgrounds usually default to TopLeft[Color] for solid fills.
+        Text+ nodes have [Color]1, [Color]2 etc for different layers.
+        """
+
+        self.add_inputs(
+            **{
+                f"{prefix}Red{suffix}": color.red,
+                f"{prefix}Green{suffix}": color.green,
+                f"{prefix}Blue{suffix}": color.blue,
+                f"{prefix}Alpha{suffix}": color.alpha,
+            }
+        )
+
+        return self
+
     def add_mask(self, mask_name: str):
         self._source_inputs.append(MaskInput(self.name, mask_name))
 
