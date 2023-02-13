@@ -29,11 +29,11 @@ from pysion.new_generators import *
 
 # print(red)
 
-red = NamedDict("Input", Value=1, Expression="Blue or 1")
-blue = NamedDict("Input", Value=0)
-point = NamedDict("Input", Pos=(0, 1))
+red = nd("Input", Value=1, Expression="Blue or 1")
+blue = nd("Input", Value=0)
+point = nd("Input", Pos=(0, 1))
 
-bruno = NamedDict("Background", Red=red, Blue=blue, Pos=point)
-tool = NamedDict("", Background1=bruno)
-
-print(tool)
+bruno = nd("Background", Red=red, Blue=blue, Pos=point)
+tool = ud(Background1=bruno, Background2=bruno)
+tools = ud(Tools=tool, ActiveTool="Background1")
+print(tools)
