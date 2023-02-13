@@ -28,6 +28,9 @@ class Tool:
             force_indent=True,
         )
 
+    def __repr__(self) -> str:
+        return repr(self.render())
+
     def _render_position(self) -> NamedTable:
         return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
 
@@ -58,6 +61,11 @@ class Tool:
         if names_and_values:
             for k, v in names_and_values.items():
                 self.add_input(Input(k, v))
+
+        return self
+
+    def add_source_input(self, name: str, source_operator: str, source: str) -> Tool:
+        self.add_input(Input(name, source_operator=source_operator, source=source))
 
         return self
 

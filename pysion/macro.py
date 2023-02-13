@@ -38,9 +38,6 @@ class InstanceInput:
     def __repr__(self) -> str:
         return repr(self.nt)
 
-    def __str__(self) -> str:
-        return self.name + " = " + repr(self.nt)
-
 
 @dataclass
 class InstanceOutput:
@@ -62,9 +59,6 @@ class InstanceOutput:
     def __repr__(self) -> str:
         return repr(self.nt)
 
-    def __str__(self) -> str:
-        return self.name + " = " + repr(self.nt)
-
 
 @dataclass
 class Macro:
@@ -81,6 +75,15 @@ class Macro:
         self.id = self.type.capitalize() + "Operator"
 
     def render(self) -> NamedTable:
+        if not self.outputs:
+            if self.tools:
+                last_tool: Tool = list(self.tools.values())[-1]
+
+                print(
+                    f"Warning: adding last added tool ({last_tool}) output as macro output."
+                )
+                self.add_output("Output", last_tool)
+
         return NamedTable(
             self.id,
             Inputs=self.inputs,
@@ -136,6 +139,10 @@ class Macro:
 
     def add_output(self, name: str, tool: Tool) -> Macro:
         op = InstanceOutput(name, tool.name, tool.output)
+
+        if self.outputs is None:
+            self.outputs = UnnamedTable()
+
         self.outputs[name] = op
 
         return self
@@ -174,5 +181,21 @@ class Macro:
             pretty_name=name,
             control_group=group,
         )
+
+        return self
+
+    def add_tool(self, tool: Tool) -> Macro:
+        if self.tools is None:
+            self.tools = UnnamedTable()
+
+        self.tools[tool.name] = tool
+
+        return self
+
+    def add_tools(self, *tools) -> Macro:
+        if not tools:
+            return self
+        for tool in tools:
+            self.add_tool(tool)
 
         return self

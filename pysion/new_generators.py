@@ -2,9 +2,9 @@ from __future__ import annotations
 from collections import UserDict, UserList
 
 
-class NamedDict(UserDict):
+class NamedTable(UserDict):
     def __init__(
-        self, name: str, dict: NamedDict = None, /, force_indent=False, **kwargs
+        self, name: str, dict: NamedTable = None, /, force_indent=False, **kwargs
     ):
         self.name = name
         self.level = 1
@@ -35,13 +35,15 @@ class NamedDict(UserDict):
         ind1: str = ind0 if not lvl else "\t" * lvl
         br = "\n" if lvl else ""
 
-        s = self.name + " { " + br
+        s = f"{self.name} {{{br}"
+
+        print(f"{self.name=} {lvl=}")
 
         for k, v in self.data.items():
             match v:
                 case str():
                     v = qs(v)
-                case NamedDict():
+                case NamedTable():
                     v = v.render(lvl + 1)
                 case list():
                     if len(v) > 1:
@@ -59,13 +61,18 @@ class NamedDict(UserDict):
         return s
 
 
-class UnnamedDict(NamedDict):
-    def __init__(self, dict: NamedDict = None, /, force_indent=False, **kwargs):
+class UnnamedTable(NamedTable):
+    def __init__(self, dict: NamedTable = None, /, force_indent=False, **kwargs):
         super().__init__("", dict, force_indent=force_indent, **kwargs)
+
+    def render(self, lvl: int = 1) -> str:
+        print("Rendering unnamed table...")
+        return super().render(lvl)
 
 
 class IndentedList(UserList):
     def __init__(self, lvl: int, initlist) -> None:
+
         self.level = lvl
         return super().__init__(initlist)
 
@@ -78,7 +85,7 @@ class IndentedList(UserList):
             match i:
                 case str():
                     i = qs(i)
-                case NamedDict():
+                case NamedTable():
                     i = i.render(self.level + 1)
                 case list():
                     if len(i) > 1:
@@ -97,8 +104,8 @@ class IndentedList(UserList):
 
 
 # aliases
-ud = UnnamedDict
-nd = NamedDict
+ut = UnnamedTable
+nt = NamedTable
 
 # quoted string
 def qs(string: str) -> str:

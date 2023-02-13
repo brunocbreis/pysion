@@ -1,10 +1,10 @@
-from pysion import Input, Polyline, SourceInput
-from pysion.new_generators import UnnamedDict
+from pysion import Input, Polyline
+from pysion.new_generators import UnnamedTable
 
-ip = Input("Red", 1)
+ip = Input("Red", source_operator="Background", source="Blue")
 
 points = [(0.2, 0.3), (0.3, 0.4)]
 
 pl = Polyline(points)
 
-print(pl.values())
+print(pl)
