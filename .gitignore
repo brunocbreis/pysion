@@ -6,3 +6,4 @@ dist/
 /pysion.egg-info/
 .venv/
 bin/
+reference/
