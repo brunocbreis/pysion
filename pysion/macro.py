@@ -1,54 +1,142 @@
+from __future__ import annotations
 from .tool import Tool
 from dataclasses import dataclass
-from .input import Input, Output
-from .wrapper import wrap_for_macro
+from .input import Input
+from .new_generators import UnnamedTable, NamedTable
+from typing import Literal
+from .utils import fusion_coords
+
+
+@dataclass
+class InstanceInput:
+    """Represents a Fusion InstanceInput. Outputs a NamedTable."""
+
+    name: str
+    source_operator: str
+    source: str
+    default: int | float | str | list[float] | NamedTable | None = None
+    page: str | None = None
+    control_group: int | None = None
+
+    @property
+    def nt(self) -> NamedTable:
+        return NamedTable(
+            "InstanceInput",
+            Name=self.name,
+            SourceOp=self.source_operator,
+            Source=self.source,
+            Default=self.default,
+            Page=self.page,
+            ControlGroup=self.control_group,
+        )
+
+    @property
+    def proper_name(self) -> str:
+        """Returns a proper name for the input, without spaces."""
+        return self.name.replace(" ", "")
+
+    def __repr__(self) -> str:
+        return repr(self.nt)
+
+    def __str__(self) -> str:
+        return self.name + " = " + repr(self.nt)
+
+
+@dataclass
+class InstanceOutput:
+    """Represents a Fusion InstanceOutput. Outputs a NamedTable."""
+
+    name: str
+    source_operator: str
+    source: str
+
+    @property
+    def nt(self) -> NamedTable:
+        return NamedTable(
+            "InstanceOutput",
+            Name=self.name,
+            SourceOp=self.source_operator,
+            Source=self.source,
+        )
+
+    def __repr__(self) -> str:
+        return repr(self.nt)
+
+    def __str__(self) -> str:
+        return self.name + " = " + repr(self.nt)
 
 
 @dataclass
 class Macro:
+    """Represents a Fusion Macro. Outputs a NamedTable, with the Macro ID being the name."""
+
     name: str
-    tools: list[Tool]
+    type: Literal["macro", "group"] = "macro"
+    inputs: UnnamedTable | None = None  # [str, InstanceInput]
+    tools: UnnamedTable | None = None  # [str, Tool]
     position: tuple[int, int] = (0, 0)
-    outputs: list[Output] = None
+    outputs: UnnamedTable = None  # [str, InstanceOutput]
 
     def __post_init__(self):
-        self.id: str = "MacroOperator"
-        self._instanced_inputs: list[Input] = []
+        self.id = self.type.capitalize() + "Operator"
 
-        if not self.outputs:
-            self._instanced_outputs: list[Output] = [self.tools[-1].outputs[0]]
-        else:
-            self._instanced_outputs: list[Output] = self.outputs
+    def render(self) -> NamedTable:
+        return NamedTable(
+            self.id,
+            Inputs=self.inputs,
+            Outputs=self.outputs,
+            Tools=self.tools,
+            ViewInfo=self.position_nt,
+            force_indent=True,
+        )
+
+    def __repr__(self) -> str:
+        return repr(self.render())
+
+    def _render_position(self) -> NamedTable:
+        return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
 
     @property
-    def instanced_inputs(self):
-        return self._instanced_inputs
+    def position_nt(self) -> NamedTable:
+        return self._render_position()
 
-    @property
-    def instanced_outputs(self):
-        return self._instanced_outputs
+    def add_input(
+        self,
+        tool: Tool,
+        input_name: str,
+        pretty_name: str | None = None,
+        page: str | None = None,
+        control_group: int | None = None,
+    ) -> Macro:
+        if self.inputs is None:
+            self.inputs = UnnamedTable()
 
-    @property
-    def string(self):
+        try:
+            input: Input = tool.inputs[input_name]
+        except KeyError:
+            raise ValueError(
+                f"Please add a valid input name. Are you sure {input_name} is one of {tool.name}'s inputs?"
+            )
 
-        instanced_inputs = "".join([ip.instance for ip in self.instanced_inputs])
+        if pretty_name is None:
+            pretty_name = input.name
 
-        instanced_outputs = "".join([op.instance for op in self.instanced_outputs])
+        new_instance = InstanceInput(
+            name=pretty_name,
+            source_operator=tool.name,
+            source=input_name,
+            default=input.value,
+            page=page,
+            control_group=control_group,
+        )
 
-        return wrap_for_macro(self, instanced_inputs, instanced_outputs, self.tools)
-
-    def add_instance_input(
-        self, input: Input, default: str | int | float = "", **properties
-    ):
-        new_instance = input
-        new_instance.default = default
-        new_instance.instance_properties = properties
-        self._instanced_inputs.append(new_instance)
+        self.inputs[new_instance.proper_name] = new_instance
 
         return self
 
-    def add_instance_output(self, tool: Tool):
-        self._instanced_outputs += tool.outputs
+    def add_output(self, name: str, tool: Tool) -> Macro:
+        op = InstanceOutput(name, tool.name, tool.output)
+        self.outputs[name] = op
 
         return self
 
@@ -59,29 +147,32 @@ class Macro:
         group: int = 1,
         prefix: str = "TopLeft",
         suffix: str = "",
-        **properties,
     ):
         """Adds all necessary color inputs as the same control group. If adding more than one, group should be incremented.
         Different Prefixes and Suffixes are added to color inputs in Fusion. Backgrounds usually default to TopLeft[Color]
         for solid fills. Text+ nodes have [Color]1, [Color]2 etc for different layers.
         """
 
-        self.add_instance_input(
-            tool.inputs[f"{prefix}Red{suffix}"],
-            ControlGroup=group,
-            Name=name,
-            **properties,
-        ).add_instance_input(
-            tool.inputs[f"{prefix}Green{suffix}"], ControlGroup=group, **properties
-        ).add_instance_input(
-            tool.inputs[f"{prefix}Blue{suffix}"], ControlGroup=group, **properties
-        ).add_instance_input(
-            tool.inputs[f"{prefix}Alpha{suffix}"], ControlGroup=group, **properties
+        self.add_input(
+            tool=tool,
+            input_name=f"{prefix}Red{suffix}",
+            pretty_name=name,
+            control_group=group,
+        ).add_input(
+            tool=tool,
+            input_name=f"{prefix}Green{suffix}",
+            pretty_name=name,
+            control_group=group,
+        ).add_input(
+            tool=tool,
+            input_name=f"{prefix}Blue{suffix}",
+            pretty_name=name,
+            control_group=group,
+        ).add_input(
+            tool=tool,
+            input_name=f"{prefix}Alpha{suffix}",
+            pretty_name=name,
+            control_group=group,
         )
 
         return self
-
-    # Aliases
-    add_input = add_instance_input
-    add_output = add_instance_output
-    add_color = add_color_input
