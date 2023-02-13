@@ -1,5 +1,6 @@
-from .utils import fusion_coords, fusion_point
+from .utils import fusion_coords, fusion_point, fusion_string
 from typing import Literal
+from luadata import serialize
 
 # General generators
 def generate(
@@ -19,17 +20,88 @@ def generate(
     return f"{ind}{name} = {kind} {{ {value_kind} = {{\n{indent}{value}\n{ind}}}, }}"
 
 
-def named_table(
-    name: str,
-    kind: str,
-    content: str | int | float,
-    indent_level: int = 0,
-    indent: str = "\t",
-    line_break: bool = False,
+# def named_table(
+#     name: str,
+#     kind: str,
+#     content: str | int | float,
+#     indent_level: int = 0,
+#     indent: str = "\t",
+#     line_break: bool = False,
+# ) -> str:
+#     br = "\n" if line_break else ""
+#     ind = indent * indent_level
+#     return f"{ind}{name} = {kind} {{ {br}{content}{br+ind} }}"
+
+
+# still bad bc of generalization with strings...
+def ink_table(
+    name: str = "", kind: str = "Input", indent_level: int = 1, **content
 ) -> str:
-    br = "\n" if line_break else ""
-    ind = indent * indent_level
-    return f"{ind}{name} = {kind} {{ {br}{content}{br+ind} }}"
+    """Returns a generic [indent][Name] = [Kind] { [content] } table for Fusion."""
+
+    if name:
+        name = f"{name.capitalize()} = "
+
+    kind = kind.capitalize()
+
+    ind = indent_level * "\t"
+    ind2 = ind + "\t"
+    ink = ind + name + kind
+
+    if not content:
+        return f"{ink} {{}},"
+
+    if len(content.keys()) == 1:
+        content_str = "".join(f"{k.capitalize()} = {v}" for k, v in content.items())
+        return f"{ink} {{ {content_str}, }},"
+
+    content_str = "\n"
+    for k, v in content.items():
+        content_str += f"{ind2}{k.capitalize()} = {v if type(v) is not str else fusion_string(v)},\n"
+    content_str += ind
+
+    return f"{ink} {{ {content_str} }},"
+
+
+# [name] = [thing] { [type_of_input] = [value], },
+# ex:
+# Background1 = Background {
+#     Inputs = {
+#               Red = Input { Value = 1, },
+#             },
+# },
+
+
+def generate_input(
+    name: str,
+    value: int | float | str | None = None,
+    expression: str | None = None,
+    indent_level: int = 4,
+) -> str:
+    ind = indent_level * "\t"
+
+    if type(value) is str:
+        value = fusion_string(value)
+
+    input_content: str = ""
+
+    if value and expression:
+        input_content += (
+            f"\n"
+            f"{ind}\tValue = {value},\n"
+            f"{ind}\tExpression = {fusion_string(expression)},\n"
+            f"{ind}"
+        )
+        return f"{ind}{name.capitalize()} = Input {{ {input_content} }},"
+
+    if value and not expression:
+        input_content = f"Value = {value},"
+        return f"{ind}{name.capitalize()} = Input {{ {input_content} }},"
+
+    if expression:
+        return f"{ind}{name.capitalize()} = Input {{ {input_content} }},"
+
+    raise ValueError("Inputs must have at least a value or an expression.")
 
 
 # Tool

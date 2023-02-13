@@ -1,12 +1,10 @@
-from pysion.generators import generate, named_table
+from pysion.generators import (
+    generate,
+    ink_table,
+    generate_input,
+    generate_published_polyline,
+)
+from pysion.utils import fusion_coords
 
-red = generate("Red", "Input", "Value", 1)
-bg = generate("Background1", "Background", "Inputs", red, wrapper=True)
-
-
-print(bg)
-
-red1 = named_table("Red", "Input", "Value = 1", 1)
-bg1 = named_table("Background1", "Background", red1, line_break=True)
-
-print(bg1)
+ply = generate_published_polyline([(0.1, 0.2), (0.3, 0.4)])
+print(ply)
