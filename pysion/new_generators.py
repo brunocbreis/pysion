@@ -1,6 +1,5 @@
 from __future__ import annotations
-from collections import UserDict
-from typing import Any
+from collections import UserDict, UserList
 
 
 class NamedDict(UserDict):
@@ -45,6 +44,8 @@ class NamedDict(UserDict):
                 case NamedDict():
                     v = v.render(lvl + 1)
                 case list():
+                    if len(v) > 1:
+                        v = IndentedList(lvl + 1, v)
                     v = repr(v).replace("[", "{ ").replace("]", " }")
                 case tuple():
                     v = repr(v).replace("(", "{ ").replace(")", " }")
@@ -61,6 +62,38 @@ class NamedDict(UserDict):
 class UnnamedDict(NamedDict):
     def __init__(self, dict: NamedDict = None, /, force_indent=False, **kwargs):
         super().__init__("", dict, force_indent=force_indent, **kwargs)
+
+
+class IndentedList(UserList):
+    def __init__(self, lvl: int, initlist) -> None:
+        self.level = lvl
+        return super().__init__(initlist)
+
+    def __repr__(self) -> str:
+        ind0: str = "" if not self.level else "\t" * (self.level - 1)
+        ind1: str = ind0 if not self.level else "\t" * self.level
+
+        s = "[\n"
+        for i in self:
+            match i:
+                case str():
+                    i = qs(i)
+                case NamedDict():
+                    i = i.render(self.level + 1)
+                case list():
+                    if len(i) > 1:
+                        i = IndentedList(self.level + 1, i)
+                    i = repr(i).replace("[", "{ ").replace("]", " }")
+                case tuple():
+                    i = repr(i).replace("(", "{ ").replace(")", " }")
+                case None:
+                    continue
+
+            s += f"{ind1}{i},\n"
+
+        s += f"{ind0}]"
+
+        return s
 
 
 # aliases

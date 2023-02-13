@@ -38,3 +38,15 @@ bruno = nd("Background", Inputs=ud(Red=red, Blue=blue, Pos=point), force_indent=
 tool = ud(Background1=bruno, Background2=bruno)
 tools = ud(Tools=tool, ActiveTool="Background1")
 print(tools)
+
+ud(PublishID="Point1")
+poly = NamedDict(
+    "Polyline",
+    Points=[
+        ud(PublishID="Point1"),
+        ud(PublishID="Point2"),
+        ud(PublishID="Point3"),
+    ],
+    force_indent=True,
+)
+print(ud(Polyline=nd("Input", Value=poly, force_indent=True), force_indent=True))
