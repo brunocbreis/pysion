@@ -33,7 +33,8 @@ red = nd("Input", Value=1, Expression="Blue or 1")
 blue = nd("Input", Value=0)
 point = nd("Input", Pos=(0, 1))
 
-bruno = nd("Background", Red=red, Blue=blue, Pos=point)
+
+bruno = nd("Background", Inputs=ud(Red=red, Blue=blue, Pos=point), force_indent=True)
 tool = ud(Background1=bruno, Background2=bruno)
 tools = ud(Tools=tool, ActiveTool="Background1")
 print(tools)
