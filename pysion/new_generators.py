@@ -35,7 +35,7 @@ class NamedTable(UserDict):
         ind1: str = ind0 if not lvl else "\t" * lvl
         br = "\n" if lvl else ""
 
-        s = f"{self.name} {{{br}"
+        s = f"{self.name} {{ {br}"
 
         print(f"{self.name=} {lvl=}")
 

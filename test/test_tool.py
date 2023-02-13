@@ -15,7 +15,7 @@ render = (
     .add_inputs(Width=1920, Height=1080)
 )
 
-macro = Macro("Square").add_tools(tool, render).add_input(tool, "Width", "Cool Width")
+macro = Macro("Ball").add_tools(tool, render).add_input(tool, "Width", "Cool Width")
 
 comp.add_tools(macro)
 

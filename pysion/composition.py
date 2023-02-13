@@ -29,9 +29,8 @@ class Composition:
 
     def render(self) -> UnnamedTable:
         ut = UnnamedTable({tool.name: tool.render() for tool in self.tools})
-        ut["ActiveTool"] = self.active_tool.name
 
-        return UnnamedTable(Tools=ut, force_indent=True)
+        return UnnamedTable(Tools=ut, ActiveTool=self.active_tool.name)
 
     def __repr__(self) -> str:
         return repr(self.render())

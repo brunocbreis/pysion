@@ -51,7 +51,6 @@ class InstanceOutput:
     def nt(self) -> NamedTable:
         return NamedTable(
             "InstanceOutput",
-            Name=self.name,
             SourceOp=self.source_operator,
             Source=self.source,
         )
@@ -97,7 +96,7 @@ class Macro:
         return repr(self.render())
 
     def _render_position(self) -> NamedTable:
-        return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
+        return NamedTable("GroupInfo", Pos=fusion_coords(self.position))
 
     @property
     def position_nt(self) -> NamedTable:
