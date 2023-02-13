@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import UserDict
+from typing import Any
 
 
 class NamedDict(UserDict):
@@ -16,6 +17,14 @@ class NamedDict(UserDict):
 
     def __repr__(self) -> str:
         return self.render(self.level)
+
+    def __len__(self) -> int:
+        l = 0
+        for v in self.values():
+            if v is None:
+                continue
+            l += 1
+        return l
 
     def render(self, lvl: int = 1) -> str:
         if len(self) == 1 and not self.force_indent:
@@ -39,6 +48,8 @@ class NamedDict(UserDict):
                     v = repr(v).replace("[", "{ ").replace("]", " }")
                 case tuple():
                     v = repr(v).replace("(", "{ ").replace(")", " }")
+                case None:
+                    continue
 
             s += f"{ind1}{k} = {v}, {br}"
 

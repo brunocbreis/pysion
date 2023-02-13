@@ -29,7 +29,7 @@ from pysion.new_generators import *
 
 # print(red)
 
-red = nd("Input", Value=1, Expression="Blue or 1")
+red = nd("Input", Value=1, Expression=None)
 blue = nd("Input", Value=0)
 point = nd("Input", Pos=(0, 1))
 
