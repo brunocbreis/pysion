@@ -1,4 +1,4 @@
-from pysion.new_generators import *
+from pysion.named_table import *
 
 
 # # red = nt("Red", "Input", {"Value": 1})

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from .new_generators import NamedTable, UnnamedTable
+from .named_table import NamedTable, UnnamedTable
 
 
 @dataclass

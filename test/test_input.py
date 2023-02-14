@@ -1,5 +1,5 @@
 from pysion import Input, Polyline
-from pysion.new_generators import UnnamedTable
+from pysion.named_table import UnnamedTable
 
 ip = Input("Red", source_operator="Background", source="Blue")
 
