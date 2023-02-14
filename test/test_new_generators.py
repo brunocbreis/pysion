@@ -40,6 +40,9 @@ from pysion.new_generators import *
 # tools = ut(Tools=tool, ActiveTool="Background1")
 # print(tools)
 
+ut = UnnamedTable
+nt = NamedTable
+
 ut(PublishID="Point1")
 poly = NamedTable(
     "Polyline",
