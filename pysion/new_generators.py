@@ -54,16 +54,16 @@ class NamedTable(UserDict):
         for k, v in self.data.items():
             match v:
                 case str():
-                    v = qs(v)
+                    v = quoted_string(v)
                 case NamedTable() | UnnamedTable():
 
                     v = v.render(lvl + 1)
                 case list():
                     if len(v) > 1:
                         v = IndentedList(lvl + 1, v)
-                    v = repr(v).replace("[", "{ ").replace("]", " }")
+                    v = list_as_table(v)
                 case tuple():
-                    v = repr(v).replace("(", "{ ").replace(")", " }")
+                    v = tuple_as_table(v)
                 case None:
                     continue
 
@@ -97,15 +97,15 @@ class IndentedList(UserList):
         for i in self:
             match i:
                 case str():
-                    i = qs(i)
+                    i = quoted_string(i)
                 case NamedTable():
                     i = i.render(self.level + 1)
                 case list():
                     if len(i) > 1:
                         i = IndentedList(self.level + 1, i)
-                    i = repr(i).replace("[", "{ ").replace("]", " }")
+                    i = list_as_table(i)
                 case tuple():
-                    i = repr(i).replace("(", "{ ").replace(")", " }")
+                    i = tuple_as_table(i)
                 case None:
                     continue
 
@@ -116,10 +116,14 @@ class IndentedList(UserList):
         return s
 
 
-# aliases
-ut = UnnamedTable
-nt = NamedTable
-
-# quoted string
-def qs(string: str) -> str:
+# Display funcs
+def quoted_string(string: str) -> str:
     return f'"{string}"'
+
+
+def list_as_table(ls: list) -> str:
+    return repr(ls).replace("[", "{ ").replace("]", " }")
+
+
+def tuple_as_table(tp: tuple) -> str:
+    return repr(tp).replace("(", "{ ").replace(")", " }")
