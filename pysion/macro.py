@@ -2,9 +2,10 @@ from __future__ import annotations
 from .tool import Tool
 from dataclasses import dataclass
 from .input import Input
-from .new_generators import UnnamedTable, NamedTable
+from .named_table import UnnamedTable, NamedTable
 from typing import Literal
-from .utils import fusion_coords, RGBA
+from .utils import fusion_coords
+from .rgba import RGBA
 
 
 @dataclass

@@ -1,8 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from .new_generators import NamedTable, UnnamedTable
+from dataclasses import dataclass
+from .named_table import NamedTable, UnnamedTable
 from .tool import Tool
-from .macro import Macro
 from typing import Protocol
 
 

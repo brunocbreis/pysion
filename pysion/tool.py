@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from .input import Input, Polyline
 from .user_controls import UserControl
 from typing import Literal
-from .utils import RGBA, fusion_coords
-from .new_generators import NamedTable, UnnamedTable
+from .utils import fusion_coords
+from .rgba import RGBA
+from .named_table import NamedTable, UnnamedTable
 
 
 @dataclass
