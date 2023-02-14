@@ -40,14 +40,14 @@ from pysion.new_generators import *
 # tools = ut(Tools=tool, ActiveTool="Background1")
 # print(tools)
 
-# ut(PublishID="Point1")
-# poly = NamedTable(
-#     "Polyline",
-#     Points=[
-#         ut(PublishID="Point1"),
-#         ut(PublishID="Point2"),
-#         ut(PublishID="Point3"),
-#     ],
-#     force_indent=True,
-# )
-# print(ut(Polyline=nt("Input", Value=poly, force_indent=True), force_indent=True))
+ut(PublishID="Point1")
+poly = NamedTable(
+    "Polyline",
+    Points=[
+        ut(PublishID="Point1"),
+        ut(PublishID="Point2"),
+        ut(PublishID="Point3"),
+    ],
+    force_indent=True,
+)
+print(ut(Polyline=nt("Input", Value=poly, force_indent=True), force_indent=True))

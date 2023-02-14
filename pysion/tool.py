@@ -44,7 +44,7 @@ class Tool:
     # Inputs
     def add_input(self, input: Input) -> Tool:
         if self.inputs is None:
-            self.inputs = UnnamedTable()
+            self.inputs = UnnamedTable(force_indent=True)
 
         self.inputs[input.name] = input
 

@@ -15,7 +15,11 @@ render = (
     .add_inputs(Width=1920, Height=1080)
 )
 
-macro = Macro("Ball").add_tools(tool, render).add_input(tool, "Width", "Cool Width")
+macro = (
+    Macro("Ball", tile_color=RGBA(0.5, 1, 1))
+    .add_tools(tool, render)
+    .add_input(tool, "Width", "Cool Width")
+)
 
 comp.add_tools(macro)
 

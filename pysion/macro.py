@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from .input import Input
 from .new_generators import UnnamedTable, NamedTable
 from typing import Literal
-from .utils import fusion_coords
+from .utils import fusion_coords, RGBA
 
 
 @dataclass
@@ -28,6 +28,7 @@ class InstanceInput:
             Default=self.default,
             Page=self.page,
             ControlGroup=self.control_group,
+            force_indent=True,
         )
 
     @property
@@ -53,6 +54,7 @@ class InstanceOutput:
             "InstanceOutput",
             SourceOp=self.source_operator,
             Source=self.source,
+            force_indent=True,
         )
 
     def __repr__(self) -> str:
@@ -69,6 +71,7 @@ class Macro:
     tools: UnnamedTable | None = None  # [str, Tool]
     position: tuple[int, int] = (0, 0)
     outputs: UnnamedTable = None  # [str, InstanceOutput]
+    tile_color: RGBA | None = None
 
     def __post_init__(self):
         self.id = self.type.capitalize() + "Operator"
@@ -89,6 +92,7 @@ class Macro:
             Outputs=self.outputs,
             Tools=self.tools,
             ViewInfo=self.position_nt,
+            Colors=self.color_nt,
             force_indent=True,
         )
 
@@ -97,6 +101,20 @@ class Macro:
 
     def _render_position(self) -> NamedTable:
         return NamedTable("GroupInfo", Pos=fusion_coords(self.position))
+
+    def _render_color(self) -> UnnamedTable:
+        tile_color = UnnamedTable(
+            R=self.tile_color.red,
+            G=self.tile_color.green,
+            B=self.tile_color.blue,
+            force_unindent=True,
+        )
+
+        return UnnamedTable(TileColor=tile_color)
+
+    @property
+    def color_nt(self) -> NamedTable:
+        return self._render_color()
 
     @property
     def position_nt(self) -> NamedTable:
@@ -111,7 +129,7 @@ class Macro:
         control_group: int | None = None,
     ) -> Macro:
         if self.inputs is None:
-            self.inputs = UnnamedTable()
+            self.inputs = UnnamedTable(force_indent=True)
 
         try:
             input: Input = tool.inputs[input_name]

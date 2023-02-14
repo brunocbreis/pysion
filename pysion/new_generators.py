@@ -4,11 +4,20 @@ from collections import UserDict, UserList
 
 class NamedTable(UserDict):
     def __init__(
-        self, name: str, dict: NamedTable = None, /, force_indent=False, **kwargs
+        self,
+        name: str,
+        dict: NamedTable = None,
+        /,
+        force_indent=False,
+        force_unindent=False,
+        **kwargs,
     ):
         self.name = name
         self.level = 1
         self.force_indent = force_indent
+        if force_unindent:
+            self.force_indent = False
+        self.force_unindent = force_unindent
 
         super().__init__(dict, **kwargs)
         if dict is not None:
@@ -26,8 +35,10 @@ class NamedTable(UserDict):
         return l
 
     def render(self, lvl: int = 1) -> str:
-        if len(self) == 1 and not self.force_indent:
-            lvl = 0
+
+        unindent = False
+        if (len(self) == 1 and not self.force_indent) or self.force_unindent:
+            unindent = True
 
         self.level = lvl
 
@@ -35,15 +46,17 @@ class NamedTable(UserDict):
         ind1: str = ind0 if not lvl else "\t" * lvl
         br = "\n" if lvl else ""
 
-        s = f"{self.name} {{ {br}"
+        if unindent:
+            ind0 = ind1 = br = ""
 
-        print(f"{self.name=} {lvl=}")
+        s = f"{self.name} {{ {br}"
 
         for k, v in self.data.items():
             match v:
                 case str():
                     v = qs(v)
-                case NamedTable():
+                case NamedTable() | UnnamedTable():
+
                     v = v.render(lvl + 1)
                 case list():
                     if len(v) > 1:
