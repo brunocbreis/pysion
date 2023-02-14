@@ -140,3 +140,7 @@ class Linear:
 
     def generate(self):
         """Returns a string with the generated curve in Fusion language"""
+
+
+def kf_pairs(keyframes: list[int]) -> zip:
+    return zip(keyframes, keyframes[1:])
