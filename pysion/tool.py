@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from .input import Input, Polyline
 from .user_controls import UserControl
 from typing import Literal
-from .utils import fusion_coords
+from .flow import fusion_coords
 from .rgba import RGBA
 from .named_table import NamedTable, UnnamedTable
 

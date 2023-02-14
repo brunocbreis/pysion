@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from .input import Input
 from .named_table import UnnamedTable, NamedTable
 from typing import Literal
-from .utils import fusion_coords
+from .flow import fusion_coords
 from .rgba import RGBA
 
 
