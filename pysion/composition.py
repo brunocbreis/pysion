@@ -5,15 +5,6 @@ from .tool import Tool
 from typing import Protocol
 
 
-class Operator(Protocol):
-    @property
-    def name(self) -> str:
-        ...
-
-    def render(self) -> NamedTable | UnnamedTable:
-        ...
-
-
 @dataclass
 class Composition:
     """Represents a Fusion composition. Outputs an UnnamedTable with tool names as keys and tools as NamedTables."""
@@ -55,3 +46,12 @@ class Composition:
             self.add_tool(tool)
 
         return self
+
+
+class Operator(Protocol):
+    @property
+    def name(self) -> str:
+        ...
+
+    def render(self) -> NamedTable | UnnamedTable:
+        ...
