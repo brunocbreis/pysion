@@ -4,3 +4,4 @@ from .macro import Macro
 from .input import Input, Polyline
 from .utils import fusion_coords
 from .rgba import RGBA
+from .named_table import FuID

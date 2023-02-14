@@ -116,6 +116,16 @@ class IndentedList(UserList):
         return s
 
 
+class FuID(UserList):
+    def __init__(self, name: str) -> None:
+        return super().__init__([name])
+
+    def __repr__(self) -> str:
+        return "FuID " + super().__repr__().replace("[", "{ ").replace(
+            "]", " }"
+        ).replace("'", '"')
+
+
 # Display funcs
 def quoted_string(string: str) -> str:
     return f'"{string}"'

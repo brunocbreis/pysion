@@ -1,12 +1,11 @@
-from pysion import Tool, Composition, Input, Macro
-from pysion.utils import RGBA
+from pysion import Tool, Composition, Input, Macro, RGBA, FuID
 
 
 comp = Composition()
 tool = (
     Tool("sRectangle", "Rect")
     .add_color_input(RGBA(0.2, 0.3, 0.4))
-    .add_inputs(Width=0.6)
+    .add_inputs(Width=0.6, Filter=FuID("Multi-box"))
     .add_input(Input("Height", 0.3, expression="Width / 2"))
 )
 render = (
