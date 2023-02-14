@@ -9,60 +9,6 @@ from .rgba import RGBA
 
 
 @dataclass
-class InstanceInput:
-    """Represents a Fusion InstanceInput. Outputs a NamedTable."""
-
-    name: str
-    source_operator: str
-    source: str
-    default: int | float | str | list[float] | NamedTable | None = None
-    page: str | None = None
-    control_group: int | None = None
-
-    @property
-    def nt(self) -> NamedTable:
-        return NamedTable(
-            "InstanceInput",
-            Name=self.name,
-            SourceOp=self.source_operator,
-            Source=self.source,
-            Default=self.default,
-            Page=self.page,
-            ControlGroup=self.control_group,
-            force_indent=True,
-        )
-
-    @property
-    def proper_name(self) -> str:
-        """Returns a proper name for the input, without spaces."""
-        return self.name.replace(" ", "")
-
-    def __repr__(self) -> str:
-        return repr(self.nt)
-
-
-@dataclass
-class InstanceOutput:
-    """Represents a Fusion InstanceOutput. Outputs a NamedTable."""
-
-    name: str
-    source_operator: str
-    source: str
-
-    @property
-    def nt(self) -> NamedTable:
-        return NamedTable(
-            "InstanceOutput",
-            SourceOp=self.source_operator,
-            Source=self.source,
-            force_indent=True,
-        )
-
-    def __repr__(self) -> str:
-        return repr(self.nt)
-
-
-@dataclass
 class Macro:
     """Represents a Fusion Macro. Outputs a NamedTable, with the Macro ID being the name."""
 
@@ -83,7 +29,7 @@ class Macro:
                 last_tool: Tool = list(self.tools.values())[-1]
 
                 print(
-                    f"Warning: adding last added tool ({last_tool}) output as macro output."
+                    f"Warning: adding last added tool ({last_tool.name}) output as macro output."
                 )
                 self.add_output("Output", last_tool)
 
@@ -217,3 +163,57 @@ class Macro:
             self.add_tool(tool)
 
         return self
+
+
+@dataclass
+class InstanceInput:
+    """Represents a Fusion InstanceInput. Outputs a NamedTable."""
+
+    name: str
+    source_operator: str
+    source: str
+    default: int | float | str | list[float] | NamedTable | None = None
+    page: str | None = None
+    control_group: int | None = None
+
+    @property
+    def nt(self) -> NamedTable:
+        return NamedTable(
+            "InstanceInput",
+            Name=self.name,
+            SourceOp=self.source_operator,
+            Source=self.source,
+            Default=self.default,
+            Page=self.page,
+            ControlGroup=self.control_group,
+            force_indent=True,
+        )
+
+    @property
+    def proper_name(self) -> str:
+        """Returns a proper name for the input, without spaces."""
+        return self.name.replace(" ", "")
+
+    def __repr__(self) -> str:
+        return repr(self.nt)
+
+
+@dataclass
+class InstanceOutput:
+    """Represents a Fusion InstanceOutput. Outputs a NamedTable."""
+
+    name: str
+    source_operator: str
+    source: str
+
+    @property
+    def nt(self) -> NamedTable:
+        return NamedTable(
+            "InstanceOutput",
+            SourceOp=self.source_operator,
+            Source=self.source,
+            force_indent=True,
+        )
+
+    def __repr__(self) -> str:
+        return repr(self.nt)
