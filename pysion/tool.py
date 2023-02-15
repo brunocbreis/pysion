@@ -173,16 +173,16 @@ class Tool:
     ) -> Tool:
         mrg = Tool("Merge", name, position)
 
-        if bg is not None:
-            bg = Input(
+        if background is not None:
+            background = Input(
                 "Background", source_operator=background.name, source=background.output
             )
-            mrg.add_input(bg)
+            mrg.add_input(background)
 
-        if fg is not None:
-            fg = Input(
+        if foreground is not None:
+            foreground = Input(
                 "Foreground", source_operator=foreground.name, source=foreground.output
             )
-            mrg.add_input(fg)
+            mrg.add_input(foreground)
 
         return mrg
