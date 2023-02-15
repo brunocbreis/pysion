@@ -93,19 +93,18 @@ class Macro:
 
         try:
             input: Input = tool.inputs[input_name]
+            default_value = input.value
         except KeyError:
-            raise ValueError(
-                f"Please add a valid input name. Are you sure {input_name} is one of {tool.name}'s inputs?"
-            )
+            default_value = None
 
         if pretty_name is None:
-            pretty_name = input.name
+            pretty_name = input_name
 
         new_instance = InstanceInput(
             name=pretty_name,
             source_operator=tool.name,
             source=input_name,
-            default=input.value,
+            default=default_value,
             page=page,
             control_group=control_group,
         )
