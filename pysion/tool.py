@@ -90,10 +90,7 @@ class Tool:
         return self
 
     def add_published_polyline(self, points: list[tuple[float, float]]) -> Tool:
-        poly = Polyline(points).inputs or None
-
-        if not poly:
-            return None
+        poly = Polyline(points).inputs
 
         for input in poly:
             self.inputs[input.name] = input
