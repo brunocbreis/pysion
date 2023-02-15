@@ -60,7 +60,7 @@ class Polyline:
             self._inputs = []
 
         self._inputs.append(polyline)
-        self._inputs += pub_ids
+        self._inputs += points
 
     @property
     def inputs(self) -> list[Input]:
