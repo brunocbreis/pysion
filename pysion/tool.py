@@ -82,6 +82,13 @@ class Tool:
 
         return self
 
+    def add_expression_input(
+        self, name: str, expression: str, value: int | float | str | None = None
+    ) -> Tool:
+        self.add_input(Input(name, value, expression))
+
+        return self
+
     def add_published_polyline(self, points: list[tuple[float, float]]) -> Tool:
         poly = Polyline(points).inputs
 
