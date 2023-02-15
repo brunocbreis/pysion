@@ -24,7 +24,10 @@ class Tool:
         inputs, user_controls = None, None
 
         if self.inputs:
-            print([type(inp) for inp in self.inputs.values()])
+            for name, inp in self.inputs.items():
+                if isinstance(inp, UnnamedTable):
+                    print(f"{name=}")
+                    print(inp)
 
             inputs: UnnamedTable[str, NamedTable] = UnnamedTable(
                 {name: inp.nt for name, inp in self.inputs.items()}
