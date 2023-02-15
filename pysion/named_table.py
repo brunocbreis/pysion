@@ -53,10 +53,10 @@ class NamedTable(UserDict):
         if unindent:
             ind0 = ind1 = br = ""
 
-        s = f"{self.name} {{ {br}"
+        name = self.name + " " if self.name else ""
+        s = f"{name}{{ {br}"
 
         for k, v in self.data.items():
-            print(type(v))
             match v:
                 case str():
                     v = quoted_string(v)
@@ -78,6 +78,9 @@ class NamedTable(UserDict):
         return s
 
     def must_indent(self) -> bool:
+        if self.force_unindent:
+            return False
+
         if len(self) >= 2:
             # print("Must indent because length is >= 2")
             return True
