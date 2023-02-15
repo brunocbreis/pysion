@@ -15,7 +15,7 @@ class Macro:
     name: str
     type: Literal["macro", "group"] = "macro"
     inputs: UnnamedTable | None = None  # [str, InstanceInput]
-    tools: UnnamedTable | None = None  # [str, Tool]
+    tools: UnnamedTable[str, Tool] | None = None  # [str, Tool]
     position: tuple[int, int] = (0, 0)
     outputs: UnnamedTable = None  # [str, InstanceOutput]
     tile_color: RGBA | None = None
@@ -28,16 +28,29 @@ class Macro:
             if self.tools:
                 last_tool: Tool = list(self.tools.values())[-1]
 
-                print(
-                    f"Warning: adding last added tool ({last_tool.name}) output as macro output."
-                )
+                print(f"Warning: adding ({last_tool.name})'s output as macro output.")
                 self.add_output("Output", last_tool)
+
+        outputs: UnnamedTable[str, NamedTable] = UnnamedTable(
+            {k: v.nt for k, v in self.outputs.items()}
+        )
+
+        inputs = None
+        if self.inputs:
+            inputs: UnnamedTable[str, NamedTable] = UnnamedTable(
+                {k: v.nt for k, v in self.inputs.items()}
+            )
+
+        tools = UnnamedTable(
+            {tool.name: tool.render() for tool in self.tools.values()},
+            force_indent=True,
+        )
 
         return NamedTable(
             self.id,
-            Inputs=self.inputs,
-            Outputs=self.outputs,
-            Tools=self.tools,
+            Inputs=inputs,
+            Outputs=outputs,
+            Tools=tools,
             ViewInfo=self.position_nt,
             Colors=self.color_nt,
             force_indent=True,
@@ -54,7 +67,6 @@ class Macro:
             R=self.tile_color.red,
             G=self.tile_color.green,
             B=self.tile_color.blue,
-            force_unindent=True,
         )
 
         return UnnamedTable(TileColor=tile_color)

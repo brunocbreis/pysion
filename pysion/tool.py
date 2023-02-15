@@ -21,11 +21,23 @@ class Tool:
 
     # Renderers
     def render(self) -> NamedTable:
+        inputs, user_controls = None, None
+
+        if self.inputs:
+            inputs: UnnamedTable[str, NamedTable] = UnnamedTable(
+                {k: v.nt for k, v in self.inputs.items()}
+            )
+
+        if self.user_controls:
+            user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(
+                {k: v.nt for k, v in self.user_controls.items()}
+            )
+
         return NamedTable(
             self.id,
-            Inputs=self.inputs,
+            Inputs=inputs,
             ViewInfo=self.position_nt,
-            UserControls=self.user_controls,
+            UserControls=user_controls,
             force_indent=True,
         )
 

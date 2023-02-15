@@ -35,9 +35,13 @@ class NamedTable(UserDict):
         return l
 
     def render(self, lvl: int = 1) -> str:
+        if self.must_indent():
+            self.force_indent = True
+            self.force_unindent = False
 
         unindent = False
-        if (len(self) == 1 and not self.force_indent) or self.force_unindent:
+        if (len(self) < 2 and not self.force_indent) or self.force_unindent:
+            # print("Setting unindent to True")
             unindent = True
 
         self.level = lvl
@@ -52,11 +56,11 @@ class NamedTable(UserDict):
         s = f"{self.name} {{ {br}"
 
         for k, v in self.data.items():
+            print(type(v))
             match v:
                 case str():
                     v = quoted_string(v)
                 case NamedTable() | UnnamedTable():
-
                     v = v.render(lvl + 1)
                 case list():
                     if len(v) > 1:
@@ -73,14 +77,31 @@ class NamedTable(UserDict):
 
         return s
 
+    def must_indent(self) -> bool:
+        if len(self) >= 2:
+            # print("Must indent because length is >= 2")
+            return True
+
+        for val in self.values():
+            if isinstance(val, NamedTable):
+                if len(val) >= 2:
+                    # print("Must indent because length of contained NamedTable is >= 2.")
+                    return True
+                if val.must_indent():
+                    # print("Must indent because contained NamedTable also must indent.")
+                    return True
+            if isinstance(val, list):
+                if len(val) >= 2:
+                    # print("Must indent because length of contained list is >= 2.")
+                    return True
+
+        # print("Doesn't need to indent.")
+        return False
+
 
 class UnnamedTable(NamedTable):
     def __init__(self, dict: NamedTable = None, /, force_indent=False, **kwargs):
         super().__init__("", dict, force_indent=force_indent, **kwargs)
-
-    def render(self, lvl: int = 1) -> str:
-        print("Rendering unnamed table...")
-        return super().render(lvl)
 
 
 class IndentedList(UserList):
