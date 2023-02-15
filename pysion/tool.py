@@ -26,7 +26,7 @@ class Tool:
         if self.inputs:
             inputs = UnnamedTable()
             for name, inp in self.inputs.items():
-                if isinstance(inp, UnnamedTable):
+                if isinstance(inp, NamedTable):
                     inputs[name] = inp
                 if isinstance(inp, Input):
                     inputs[name] = inp.nt
