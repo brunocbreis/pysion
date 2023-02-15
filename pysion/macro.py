@@ -62,7 +62,10 @@ class Macro:
     def _render_position(self) -> NamedTable:
         return NamedTable("GroupInfo", Pos=fusion_coords(self.position))
 
-    def _render_color(self) -> UnnamedTable:
+    def _render_color(self) -> UnnamedTable | None:
+        if not self.tile_color:
+            return None
+
         tile_color = UnnamedTable(
             R=self.tile_color.red,
             G=self.tile_color.green,
