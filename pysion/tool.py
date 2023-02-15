@@ -24,14 +24,12 @@ class Tool:
         inputs, user_controls = None, None
 
         if self.inputs:
+            inputs = UnnamedTable()
             for name, inp in self.inputs.items():
                 if isinstance(inp, UnnamedTable):
-                    print(f"{name=}")
-                    print(inp)
-
-            inputs: UnnamedTable[str, NamedTable] = UnnamedTable(
-                {name: inp.nt for name, inp in self.inputs.items()}
-            )
+                    inputs[name] = inp
+                if isinstance(inp, Input):
+                    inputs[name] = inp.nt
 
         if self.user_controls:
             user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(

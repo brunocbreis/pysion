@@ -34,7 +34,7 @@ class Input:
 
 @dataclass
 class Polyline:
-    """Represents a Published Polyline input. Outputs a list of Inputs."""
+    """Represents a Published Polyline input. Outputs a list of Inputs and Unnamed tables."""
 
     points: list[tuple[float, float]]
 
