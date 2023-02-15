@@ -64,6 +64,7 @@ class Polyline:
 
     @property
     def inputs(self) -> list[Input]:
+        self._render()
         return self._inputs
 
     def __repr__(self) -> str:
