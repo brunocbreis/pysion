@@ -28,10 +28,9 @@ class Tool:
             for name, inp in self.inputs.items():
                 if isinstance(inp, NamedTable):
                     inputs[name] = inp
-                    print(name)
+
                 if isinstance(inp, Input):
                     inputs[name] = inp.nt
-                    print(name)
 
         if self.user_controls:
             user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(
