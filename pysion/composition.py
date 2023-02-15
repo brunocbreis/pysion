@@ -18,11 +18,11 @@ class Composition:
                 self.active_tool = self.tools[-1]
 
     def render(self) -> UnnamedTable:
-        ut = UnnamedTable(
+        tools = UnnamedTable(
             {tool.name: tool.render() for tool in self.tools}, force_indent=True
         )
 
-        return UnnamedTable(Tools=ut, ActiveTool=self.active_tool.name)
+        return UnnamedTable(Tools=tools, ActiveTool=self.active_tool.name)
 
     def __repr__(self) -> str:
         return repr(self.render())
