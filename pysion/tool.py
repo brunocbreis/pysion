@@ -4,7 +4,7 @@ from .input import Input, Polyline
 from .user_controls import UserControl
 from typing import Literal
 from .flow import fusion_coords
-from .rgba import RGBA
+from .color import RGBA
 from .named_table import NamedTable, UnnamedTable
 
 

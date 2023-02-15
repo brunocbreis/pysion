@@ -5,7 +5,7 @@ from .input import Input
 from .named_table import UnnamedTable, NamedTable
 from typing import Literal
 from .flow import fusion_coords
-from .rgba import RGBA
+from .color import RGBA
 
 
 @dataclass
