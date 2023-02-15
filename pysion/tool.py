@@ -24,13 +24,15 @@ class Tool:
         inputs, user_controls = None, None
 
         if self.inputs:
+            print([type(inp) for inp in self.inputs.values()])
+
             inputs: UnnamedTable[str, NamedTable] = UnnamedTable(
-                {k: v.nt for k, v in self.inputs.items()}
+                {name: inp.nt for name, inp in self.inputs.items()}
             )
 
         if self.user_controls:
             user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(
-                {k: v.nt for k, v in self.user_controls.items()}
+                {name: control.nt for name, control in self.user_controls.items()}
             )
 
         return NamedTable(

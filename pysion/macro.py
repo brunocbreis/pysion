@@ -41,7 +41,7 @@ class Macro:
                 {k: v.nt for k, v in self.inputs.items()}
             )
 
-        tools = UnnamedTable(
+        tools: UnnamedTable[str, NamedTable] = UnnamedTable(
             {tool.name: tool.render() for tool in self.tools.values()},
             force_indent=True,
         )
