@@ -23,3 +23,18 @@ macro = (
 comp.add_tools(macro)
 
 print(comp)
+
+srect = (
+    Tool("sRectangle", f"GeomColShape1")
+    .add_inputs(
+        Width=1920,
+        Height=1080,
+        Red=1,
+        Green=0.5,
+        Blue=0.5,
+        Alpha=1,
+    )
+    .add_inputs(**{'["Translate.X"]': -0.2})
+)
+
+print(srect)

@@ -64,7 +64,7 @@ class Polyline:
 
     @property
     def inputs(self) -> list[Input]:
-        return self._inputs()
+        return self._inputs
 
     def __repr__(self) -> str:
         return "".join(repr(i) for i in self.inputs)
