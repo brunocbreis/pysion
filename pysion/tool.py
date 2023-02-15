@@ -174,14 +174,26 @@ class Tool:
         mrg = Tool("Merge", name, position)
 
         if background is not None:
+            try:
+                background.output
+                bg_out = background.output
+            except AttributeError:
+                bg_out = "Output"
+
             background = Input(
-                "Background", source_operator=background.name, source=background.output
+                "Background", source_operator=background.name, source=bg_out
             )
             mrg.add_input(background)
 
         if foreground is not None:
+            try:
+                foreground.output
+                fg_out = foreground.output
+            except AttributeError:
+                fg_out = "Output"
+
             foreground = Input(
-                "Foreground", source_operator=foreground.name, source=foreground.output
+                "Foreground", source_operator=foreground.name, source=fg_out
             )
             mrg.add_input(foreground)
 
