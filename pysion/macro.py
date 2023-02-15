@@ -28,7 +28,7 @@ class Macro:
             if self.tools:
                 last_tool: Tool = list(self.tools.values())[-1]
 
-                print(f"Warning: adding ({last_tool.name})'s output as macro output.")
+                print(f"Warning: adding {last_tool.name}'s output as macro output.")
                 self.add_output("Output", last_tool)
 
         outputs: UnnamedTable[str, NamedTable] = UnnamedTable(
@@ -67,6 +67,7 @@ class Macro:
             R=self.tile_color.red,
             G=self.tile_color.green,
             B=self.tile_color.blue,
+            force_unindent=True,
         )
 
         return UnnamedTable(TileColor=tile_color)
