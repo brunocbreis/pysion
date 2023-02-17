@@ -17,19 +17,13 @@ class Macro:
     inputs: UnnamedTable | None = None  # [str, InstanceInput]
     tools: UnnamedTable[str, Tool] | None = None  # [str, Tool]
     position: tuple[int, int] = (0, 0)
-    outputs: list[InstanceOutput] | None = None
     tile_color: RGBA | None = None
 
     def __post_init__(self):
         self.id = self.type.capitalize() + "Operator"
+        self._outputs: list[InstanceOutput] = None
 
     def render(self) -> NamedTable:
-        if not self.outputs:
-            if self.tools:
-                last_tool: Tool = list(self.tools.values())[-1]
-
-                print(f"Warning: adding {last_tool.name}'s output as macro output.")
-                self.add_output(last_tool)
 
         outputs: UnnamedTable[str, NamedTable] = UnnamedTable(
             {output.name: output.nt for output in self.outputs}
@@ -76,6 +70,23 @@ class Macro:
         return UnnamedTable(TileColor=tile_color)
 
     @property
+    def outputs(self) -> list[InstanceOutput]:
+        if self._outputs:
+            return self._outputs
+
+        if self._outputs is None:
+            self._outputs: list[InstanceOutput] = []
+            if not self.tools:
+                raise ValueError(
+                    "Macro has no tools yet. Please add a tool so it can have outputs."
+                )
+
+        last_tool = list(self.tools.values())[-1]
+        self.add_output(last_tool)
+
+        return self._outputs
+
+    @property
     def color_nt(self) -> NamedTable:
         return self._render_color()
 
@@ -117,14 +128,14 @@ class Macro:
         return self
 
     def add_output(self, tool: Tool) -> Macro:
-        if self.outputs is None:
-            self.outputs: list[InstanceOutput] = []
+        if self._outputs is None:
+            self._outputs: list[InstanceOutput] = []
 
-        name = f"Output{len(self.outputs)+1}"
+        name = f"Output{len(self._outputs)+1}"
 
         new_output = InstanceOutput(name, tool.name, tool.output)
 
-        self.outputs.append(new_output)
+        self._outputs.append(new_output)
 
         return self
 
