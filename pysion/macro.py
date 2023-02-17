@@ -120,7 +120,7 @@ class Macro:
         if self.outputs is None:
             self.outputs: list[InstanceOutput] = []
 
-        name = f"Output{len(self.outputs+1)}"
+        name = f"Output{len(self.outputs)+1}"
 
         new_output = InstanceOutput(name, tool.name, tool.output)
 
