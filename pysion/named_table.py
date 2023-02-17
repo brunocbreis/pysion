@@ -68,6 +68,8 @@ class NamedTable(UserDict):
                     v = list_as_table(v)
                 case tuple():
                     v = tuple_as_table(v)
+                case bool():
+                    v = lowercase_bool(v)
                 case None:
                     continue
 
@@ -130,6 +132,8 @@ class IndentedList(UserList):
                     i = list_as_table(i)
                 case tuple():
                     i = tuple_as_table(i)
+                case bool():
+                    i = lowercase_bool(i)
                 case None:
                     continue
 
@@ -161,3 +165,7 @@ def list_as_table(ls: list) -> str:
 
 def tuple_as_table(tp: tuple) -> str:
     return repr(tp).replace("(", "{ ").replace(")", " }")
+
+
+def lowercase_bool(b: bool) -> str:
+    return repr(b).lower()
