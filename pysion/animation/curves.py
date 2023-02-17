@@ -1,11 +1,12 @@
 from typing import Protocol
+from ..named_table import NamedTable, UnnamedTable
 
 
 def add_keyframe(
-    frame: int,
-    value: float,
-    left_handle: tuple[float, float] = "",
-    right_handle: tuple[float, float] = "",
+    frame: int | float,
+    value: int | float,
+    left_handle: tuple[float, float] | None = None,
+    right_handle: tuple[float, float] | None = None,
 ) -> str:
     if left_handle:
         left_x, left_y = left_handle
@@ -14,6 +15,8 @@ def add_keyframe(
     if right_handle:
         right_x, right_y = right_handle
         right_handle = f"RH = {{ {right_x}, {right_y} }} "
+
+    kf = UnnamedTable
 
     kf = f"\t\t\t\t[{frame}] = {{ {value}, {left_handle}{right_handle}}},\n"
 
