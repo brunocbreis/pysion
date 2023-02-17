@@ -167,6 +167,7 @@ class Tool:
             UseFrameFormatSettings=0, Width=resolution[0], Height=resolution[1]
         )
 
+    # Deprecated...
     @classmethod
     def merge(
         cls,

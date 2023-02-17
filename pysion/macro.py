@@ -17,7 +17,7 @@ class Macro:
     inputs: UnnamedTable | None = None  # [str, InstanceInput]
     tools: UnnamedTable[str, Tool] | None = None  # [str, Tool]
     position: tuple[int, int] = (0, 0)
-    outputs: UnnamedTable = None  # [str, InstanceOutput]
+    outputs: list[InstanceOutput] | None = None
     tile_color: RGBA | None = None
 
     def __post_init__(self):
@@ -29,10 +29,10 @@ class Macro:
                 last_tool: Tool = list(self.tools.values())[-1]
 
                 print(f"Warning: adding {last_tool.name}'s output as macro output.")
-                self.add_output("Output", last_tool)
+                self.add_output(last_tool)
 
         outputs: UnnamedTable[str, NamedTable] = UnnamedTable(
-            {k: v.nt for k, v in self.outputs.items()}
+            {output.name: output.nt for output in self.outputs}
         )
 
         inputs = None
@@ -116,13 +116,15 @@ class Macro:
 
         return self
 
-    def add_output(self, name: str, tool: Tool) -> Macro:
-        op = InstanceOutput(name, tool.name, tool.output)
-
+    def add_output(self, tool: Tool) -> Macro:
         if self.outputs is None:
-            self.outputs = UnnamedTable()
+            self.outputs: list[InstanceOutput] = []
 
-        self.outputs[name] = op
+        name = f"Output{len(self.outputs+1)}"
+
+        new_output = InstanceOutput(name, tool.name, tool.output)
+
+        self.outputs.append(new_output)
 
         return self
 

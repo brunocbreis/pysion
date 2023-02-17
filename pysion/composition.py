@@ -2,7 +2,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from .named_table import NamedTable, UnnamedTable
 from .tool import Tool
+from .macro import Macro
 from typing import Protocol
+from .input import Input
 
 
 @dataclass
@@ -46,6 +48,43 @@ class Composition:
             self.add_tool(tool)
 
         return self
+
+    def add_merge(
+        self,
+        name: str,
+        background: Tool | Macro | None,
+        foreground: Tool | Macro | None,
+        position: tuple[float, float],
+    ) -> Tool:
+        merge = Tool("Merge", name, position)
+
+        match background:
+            case Tool():
+                bg_output = background.output
+            case Macro():
+                bg_output = background.outputs[0].name
+            case _:
+                bg_output = None
+        if bg_output:
+            bg_input = Input(
+                "Background", source_operator=background.name, source=bg_output
+            )
+
+        match foreground:
+            case Tool():
+                fg_output = foreground.output
+            case Macro():
+                fg_output = foreground.outputs[0].name
+            case _:
+                fg_output = None
+        if fg_output:
+            fg_input = Input(
+                "Foreground", source_operator=foreground.name, source=fg_output
+            )
+
+        merge.add_inputs(bg_input, fg_input)
+
+        return merge
 
 
 class Operator(Protocol):
