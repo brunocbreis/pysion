@@ -29,16 +29,12 @@ class Composition:
     def __repr__(self) -> str:
         return repr(self.render())
 
-    def add_tool(self, tool: Tool) -> Composition:
-        if self.tools is None:
-            self.tools: list[Operator] = []
+    def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
+        new_tool = Tool(id, name, position)
 
-        self.tools.append(tool)
+        self.add_tools(new_tool)
 
-        if not self.active_tool:
-            self.active_tool = tool
-
-        return self
+        return new_tool
 
     def add_tools(self, *tools) -> Composition:
         if not tools:
