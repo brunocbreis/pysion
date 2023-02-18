@@ -14,27 +14,31 @@ class Keyframe(UserDict):
         self.frame = frame
         self.value = value
 
+        self.right_hand = right_hand
+        self.left_hand = left_hand
+
         self.loop: bool | None = None
         self.ping_pong: bool | None = None
         self.loop_rel: bool | None = None
         self.step_in: bool | None = None
         self.step_out: bool | None = None
 
-        return super().__init__(RH=right_hand, LH=left_hand)
+        return super().__init__()
 
     def __repr__(self) -> str:
-        hands = " "
-
+        self.update(RH=self.right_hand, LH=self.left_hand)
         flags = self._render_flags()
-        if flags is None:
-            flags = ""
 
+        hands = " "
         for hand, value in self.data.items():
             if value is None:
                 continue
             hands += f"{hand} = {tuple_as_table(value)}, "
 
-        return f"{{ {self.value},{hands} }}"
+        if flags is None:
+            return f"{{ {self.value},{hands}}}"
+
+        return f"{{ {self.value},{hands}Flags = {flags} }}"
 
     def add_flags(
         self,
@@ -53,7 +57,7 @@ class Keyframe(UserDict):
         return self
 
     def _render_flags(self) -> UnnamedTable | None:
-        if any(self.loop, self.ping_pong, self.loop_rel, self.step_in, self.step_out):
+        if any([self.loop, self.ping_pong, self.loop_rel, self.step_in, self.step_out]):
             flags = UnnamedTable()
             flags["Loop"] = self.loop
             flags["PingPong"] = self.ping_pong

@@ -5,6 +5,7 @@ from .tool import Tool
 from .macro import Macro
 from typing import Protocol
 from .input import Input
+from .animation import BezierSpline, Curve
 
 
 @dataclass
@@ -20,6 +21,10 @@ class Composition:
                 self.active_tool = self.tools[-1]
 
     def render(self) -> UnnamedTable:
+        if not self.active_tool:
+            if self.tools:
+                self.active_tool = self.tools[-1]
+
         tools = UnnamedTable(
             {tool.name: tool.render() for tool in self.tools}, force_indent=True
         )
@@ -40,8 +45,12 @@ class Composition:
         if not tools:
             return self
 
+        if not self.tools:
+            self.tools: list[Operator] = []
+
         for tool in tools:
-            self.add_tool(tool)
+            if isinstance(tool, Tool):
+                self.tools.append(tool)
 
         return self
 
@@ -81,6 +90,27 @@ class Composition:
         merge.add_inputs(bg_input, fg_input)
 
         return merge
+
+    def animate(self, tool: Tool | str, input_name: str) -> BezierSpline:
+        match tool:
+            case Tool():
+                # TODO: test if tool is in comp
+                tool_name = tool.name
+            case str():
+                try:
+                    tool = self.tools[tool]
+                    tool_name = tool
+                except KeyError:
+                    raise ValueError(f"{tool} is not one of the tools in this comp.")
+            case _:
+                raise ValueError("Please add a valid Tool or Tool name.")
+
+        new_spline = BezierSpline(f"{tool_name}{input_name}")
+
+        tool.add_source_input(input_name, new_spline.name, "Value")
+        self.tools.append(new_spline)
+
+        return new_spline
 
 
 class Operator(Protocol):

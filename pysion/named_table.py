@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import UserDict, UserList
+from typing import Any
 
 
 class NamedTable(UserDict):
@@ -57,6 +58,9 @@ class NamedTable(UserDict):
         s = f"{name}{{ {br}"
 
         for k, v in self.data.items():
+            match k:
+                case int() | float():
+                    k = keyframe(k)
             match v:
                 case str():
                     v = quoted_string(v)
@@ -102,6 +106,24 @@ class NamedTable(UserDict):
 
         # print("Doesn't need to indent.")
         return False
+
+    def ordered(self, reverse: bool = False) -> list[tuple[str | int | float, Any]]:
+        """Returns the NamedTable as a sorted list of tuple[key, val], by keys.
+        Useful for a table of keyframes that need to be sorted by time."""
+
+        if self.data is None:
+
+            return None
+
+        data_list = []
+
+        for k, v in self.items():
+            pair = (k, v)
+            data_list.append(pair)
+
+        data_list.sort(key=lambda x: x[0], reverse=reverse)
+
+        return data_list
 
 
 class UnnamedTable(NamedTable):
@@ -169,3 +191,7 @@ def tuple_as_table(tp: tuple) -> str:
 
 def lowercase_bool(b: bool) -> str:
     return repr(b).lower()
+
+
+def keyframe(n: int | float) -> str:
+    return f"[{n}]"
