@@ -39,12 +39,12 @@ class BezierSpline:
 
         self.keyframes[kf.frame] = kf
 
-    def _calculate_hands(self) -> UnnamedTable | None:
+    def _calculate_hands(self) -> None:
         if not self.keyframes:
-            return None
+            return
 
         if len(self.keyframes) == 1:
-            return self.keyframes
+            return
 
         keyframes: list[tuple[int | float, Keyframe]] = self.keyframes.ordered()
         for i, (frame, kf) in enumerate(keyframes):
@@ -100,7 +100,11 @@ class BezierSpline:
 
                 kf.left_hand = (lh_x, lh_y)
 
-        return self.keyframes
-
     def _render_keyframes(self) -> UnnamedTable | None:
-        return self._calculate_hands()
+        self._calculate_hands()
+        ordered_keyframes = UnnamedTable()
+
+        for frame, keyframe in self.keyframes.ordered():
+            ordered_keyframes[frame] = keyframe
+
+        return ordered_keyframes
