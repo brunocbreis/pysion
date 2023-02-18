@@ -11,90 +11,96 @@ class BezierSpline:
 
     def __post_init__(self):
         self.id = "BezierSpline"
-        self.keyframes: UnnamedTable[int | float, Keyframe] = UnnamedTable()
+        self.keyframes: UnnamedTable[int | float, Keyframe] | None = None
+
+    def render(self) -> NamedTable:
+        keyframes = self._render_keyframes()
+
+        return NamedTable(self.id, KeyFrames=keyframes)
 
     def add_keyframes(
         self,
         pairs: list[tuple[int | float, int | float]],
         curve: Curve = Curve.linear(),
     ) -> BezierSpline:
-        # TODO: this does not consider previously added keyframes and thus does not recalculate
-        # easing for previous values.
-        # could check for existing keyframes with frames less than min([pair[0] for pair in pairs])
-        # and more than max([pair[0] for pair in pairs]) and then add them to the list.
-        # and any in between too, cause they will have to be recalculated.
-        # unless there are two in between.
-
         if not pairs:
             return self
 
-        if len(pairs) == 1:
-            kf = Keyframe(*pairs[0])
-            self.keyframes[kf.frame] = kf.value
-
-            return self
-
-        if curve == Curve():
-            for pair in pairs:
-                kf = Keyframe(*pair)
-                self.keyframes[kf.frame] = kf.value
-            return self
-
-        for i, pair in enumerate(sorted(pairs, key=lambda x: x[0])):
-            if i == 0:
-                # rh only
-                next_frame, next_value = pairs[i + 1]
-
-                kf = Keyframe(*pair)
-
-                rh_x = kf.frame + (next_frame - kf.frame) * curve.right_hand[0]
-                rh_y = kf.value + (next_value - kf.value) * curve.right_hand[1]
-
-                kf.right_hand = (rh_x, rh_y)
-
-                self.keyframes[kf.frame] = kf
-                continue
-
-            if i == len(pairs) - 1:
-                # lh only
-                previous_frame, previous_value = pairs[i - 1]
-
-                kf = Keyframe(*pair)
-
-                lh_x = kf.frame - (kf.frame - previous_frame) * curve.right_hand[0]
-                lh_y = kf.value - (kf.value - previous_value) * curve.right_hand[1]
-
-                kf.left_hand = (lh_x, lh_y)
-
-                self.keyframes[kf.frame] = kf
-                continue
-
-            next_frame, next_value = pairs[i + 1]
-            previous_frame, previous_value = pairs[i - 1]
-
-            kf = Keyframe(*pair)
-
-            rh_x = kf.frame + (next_frame - kf.frame) * curve.right_hand[0]
-            rh_y = kf.value + (next_value - kf.value) * curve.right_hand[1]
-
-            lh_x = kf.frame - (kf.frame - previous_frame) * curve.right_hand[0]
-            lh_y = kf.value - (kf.value - previous_value) * curve.right_hand[1]
-
-            kf.right_hand = (rh_x, rh_y)
-            kf.left_hand = (lh_x, lh_y)
-
-            self.keyframes[kf.frame] = kf
+        for pair in pairs:
+            kf = Keyframe(*pair, curve)
+            self._add_keyframe(kf)
 
         return self
 
-    def _render_keyframes(self) -> UnnamedTable:
-        keyframes_unnamed_table = UnnamedTable()
-        for frame, keyframe in self.keyframes.items():
-            keyframes_unnamed_table[frame] = keyframe
+    # Private methods
+    def _add_keyframe(self, kf: Keyframe) -> None:
+        if self.keyframes is None:
+            self.keyframes = UnnamedTable()
 
-        return keyframes_unnamed_table
+        self.keyframes[kf.frame] = kf
 
-    def render(self) -> NamedTable:
-        keyframes_unnamed_table = self._render_keyframes()
+    def _calculate_hands(self) -> UnnamedTable | None:
+        if not self.keyframes:
+            return None
 
-        return NamedTable(self.id, KeyFrames=keyframes_unnamed_table)
+        if len(self.keyframes) == 1:
+            return self.keyframes
+
+        keyframes: list[tuple[int | float, Keyframe]] = self.keyframes.ordered()
+        for i, (frame, kf) in enumerate(keyframes):
+            if i == 0:
+                # rh only
+                if kf.rel_right_hand is None:
+                    continue
+
+                next_frame, next_value = (
+                    keyframes[i + 1][1].frame,
+                    keyframes[i + 1][1].value,
+                )
+
+                rh_x = frame + (next_frame - frame) * kf.rel_right_hand[0]
+                rh_y = kf.value + (next_value - kf.value) * kf.rel_right_hand[1]
+
+                kf.right_hand = (rh_x, rh_y)
+                continue
+
+            if i == len(keyframes) - 1:
+                # lh only
+                if kf.rel_left_hand is None:
+                    continue
+
+                previous_frame, previous_value = (
+                    keyframes[i - 1][1].frame,
+                    keyframes[i - 1][1].value,
+                )
+
+                lh_x = frame - (frame - previous_frame) * kf.rel_left_hand[0]
+                lh_y = kf.value - (kf.value - previous_value) * kf.rel_left_hand[1]
+
+                kf.left_hand = (lh_x, lh_y)
+                continue
+
+            # both hands
+            if kf.rel_right_hand is not None:
+                next_frame, next_value = (
+                    keyframes[i + 1][1].frame,
+                    keyframes[i + 1][1].value,
+                )
+                rh_x = frame + (next_frame - frame) * kf.rel_right_hand[0]
+                rh_y = kf.value + (next_value - kf.value) * kf.rel_right_hand[1]
+                kf.right_hand = (rh_x, rh_y)
+
+            if kf.rel_left_hand is not None:
+                previous_frame, previous_value = (
+                    keyframes[i - 1][1].frame,
+                    keyframes[i - 1][1].value,
+                )
+                lh_x = frame - (frame - previous_frame) * kf.rel_left_hand[0]
+                lh_y = kf.value - (kf.value - previous_value) * kf.rel_left_hand[1]
+
+                kf.left_hand = (lh_x, lh_y)
+
+        return self.keyframes
+
+    def _render_keyframes(self) -> UnnamedTable | None:
+        return self._calculate_hands()
