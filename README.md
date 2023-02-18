@@ -1,12 +1,10 @@
 !["Pysion"](https://github.com/brunocbreis/pysion/blob/master/images/pysion-logo.png)
 
-
  ![version: beta](https://img.shields.io/badge/version-beta-blue)   [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/brunoreis)
-
 
 ## A more pythonic way to programmatically create Fusion compositions
 
-**pysion** is a python package / framework for creating Blackmagic [DaVinci Resolve] Fusion comps with code. Comps, tools and inputs are stored in custom python `dict`s that mimic Fusion's `.setting` files lua-like syntax when turned into strings. When you run `comp.render()`, you get text that's readily pasteable into Fusion. 
+**pysion** is a python package / framework for creating Blackmagic [DaVinci Resolve] Fusion comps with code. Comps, tools and inputs are stored in custom python `dict`s that mimic Fusion's `.setting` files lua-like syntax when turned into strings. When you run `comp.render()`, you get text that's readily pasteable into Fusion.
 
 ## Example code
 
@@ -25,6 +23,7 @@ comp.add_tools(bg, mask)
 
 print(comp.render())
 ```
+
 The output...
 
 ```lua
@@ -66,10 +65,8 @@ You can install **pysion** by running `pip install git+https://github.com/brunoc
 
 As of right now, I have also been developing [FuPlot](https://github.com/brunocbreis/FuPlot), which relies on **pysion** to generate data visualizations as completely-editable (and animatable) Fusion node trees. I would love to see what else people can come up with!
 
-
 ## To-do
 
-- add animations
 - add user controls
   - add user control pages
 - create list of possible FuIDs
