@@ -2,7 +2,7 @@
 
  ![version: beta](https://img.shields.io/badge/version-beta-blue)   [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/brunoreis)
 
-## A more pythonic way to programmatically create Fusion compositions
+## A more pythonic way to create Fusion compositions
 
 **pysion** is a python package / framework for creating Blackmagic [DaVinci Resolve] Fusion comps with code. Comps, tools and inputs are stored in custom python `dict`s that mimic Fusion's `.setting` files lua-like syntax when turned into strings. When you run `comp.render()`, you get text that's readily pasteable into Fusion.
 
