@@ -61,7 +61,7 @@ You can install **pysion** by running `pip install git+https://github.com/brunoc
 
 ## What to expect
 
-**pysion** is still very much a work-in-progress, so expect lots of changes and adjustments in its syntax in these beginning stages. I hope to add animation support in the near future, because that's when it becomes the most powerful ✨
+**pysion** is still very much a work-in-progress, so expect lots of changes and adjustments in its syntax in these beginning stages.
 
 As of right now, I have also been developing [FuPlot](https://github.com/brunocbreis/FuPlot), which relies on **pysion** to generate data visualizations as completely-editable (and animatable) Fusion node trees. I would love to see what else people can come up with!
 
