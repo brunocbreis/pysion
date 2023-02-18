@@ -5,7 +5,7 @@ from .tool import Tool
 from .macro import Macro
 from typing import Protocol
 from .input import Input
-from .animation import BezierSpline, Curve
+from .animation import BezierSpline
 
 
 @dataclass
@@ -13,35 +13,47 @@ class Composition:
     """Represents a Fusion composition. Outputs an UnnamedTable with tool names as keys and tools as NamedTables."""
 
     tools: list[Operator] | None = None
-    active_tool: Operator | None = None
 
-    def __post_init__(self):
-        if not self.active_tool:
-            if self.tools:
-                self.active_tool = self.tools[-1]
+    def __post_init__(self) -> None:
+        self.active_tool: Tool | None = None
+        self.modifiers: list[Operator] | None = None
 
     def render(self) -> UnnamedTable:
-        if not self.active_tool:
-            if self.tools:
-                self.active_tool = self.tools[-1]
+        self._auto_set_active_tool()
 
-        tools = UnnamedTable(
-            {tool.name: tool.render() for tool in self.tools}, force_indent=True
-        )
+        operators = UnnamedTable(force_indent=True)
+        if self.tools:
+            operators.update({tool.name: tool.render() for tool in self.tools})
+        if self.modifiers:
+            operators.update(
+                {modifier.name: modifier.render() for modifier in self.modifiers}
+            )
 
-        return UnnamedTable(Tools=tools, ActiveTool=self.active_tool.name)
+        if not operators:
+            print("Comp is empty.")
+            return None
+
+        return UnnamedTable(Tools=operators, ActiveTool=self.active_tool.name)
 
     def __repr__(self) -> str:
         return repr(self.render())
 
+    def _auto_set_active_tool(self) -> None:
+        if not self.active_tool:
+            if self.tools:
+                self.active_tool = self.tools[-1]
+
     def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
         new_tool = Tool(id, name, position)
 
-        self.add_tools(new_tool)
+        if self.tools is None:
+            self.tools: list[Operator] = []
+
+        self.tools.append(new_tool)
 
         return new_tool
 
-    def add_tools(self, *tools) -> Composition:
+    def add_tools(self, *tools: Operator) -> Composition:
         if not tools:
             return self
 
@@ -108,9 +120,16 @@ class Composition:
         new_spline = BezierSpline(f"{tool_name}{input_name}")
 
         tool.add_source_input(input_name, new_spline.name, "Value")
-        self.tools.append(new_spline)
+
+        if self.modifiers is None:
+            self.modifiers: list[Operator] = []
+
+        self.modifiers.append(new_spline)
 
         return new_spline
+
+    def publish(self, tool: Tool, input: str) -> Operator:
+        ...
 
 
 class Operator(Protocol):
