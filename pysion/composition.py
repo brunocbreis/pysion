@@ -6,6 +6,7 @@ from .macro import Macro
 from typing import Protocol
 from .input import Input
 from .animation import BezierSpline
+from .named_table import FuID
 
 
 @dataclass
@@ -21,13 +22,7 @@ class Composition:
     def render(self) -> UnnamedTable:
         self._auto_set_active_tool()
 
-        operators = UnnamedTable(force_indent=True)
-        if self.tools:
-            operators.update({tool.name: tool.render() for tool in self.tools})
-        if self.modifiers:
-            operators.update(
-                {modifier.name: modifier.render() for modifier in self.modifiers}
-            )
+        operators = self._render_operators()
 
         if not operators:
             print("Comp is empty.")
@@ -38,31 +33,53 @@ class Composition:
     def __repr__(self) -> str:
         return repr(self.render())
 
+    # Private methods
     def _auto_set_active_tool(self) -> None:
         if not self.active_tool:
             if self.tools:
                 self.active_tool = self.tools[-1]
 
-    def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
-        new_tool = Tool(id, name, position)
+    def _render_operators(self) -> UnnamedTable:
+        operators = UnnamedTable(force_indent=True)
 
+        if self.tools:
+            operators.update({tool.name: tool.render() for tool in self.tools})
+        if self.modifiers:
+            operators.update(
+                {modifier.name: modifier.render() for modifier in self.modifiers}
+            )
+
+        return operators
+
+    def _add_tool(self, tool: Operator) -> Operator:
         if self.tools is None:
             self.tools: list[Operator] = []
 
-        self.tools.append(new_tool)
+        self.tools.append(tool)
 
-        return new_tool
+        return tool
+
+    def _add_modifier(self, modifier: Operator) -> Operator:
+        if self.modifiers is None:
+            self.modifiers: list[Operator] = []
+
+        self.modifiers.append(modifier)
+
+        return modifier
+
+    # Public methods
+    # Tools
+    def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
+        new_tool = Tool(id, name, position)
+
+        return self._add_tool(new_tool)
 
     def add_tools(self, *tools: Operator) -> Composition:
         if not tools:
             return self
 
-        if not self.tools:
-            self.tools: list[Operator] = []
-
         for tool in tools:
-            if isinstance(tool, Tool):
-                self.tools.append(tool)
+            self._add_tool(tool)
 
         return self
 
@@ -103,6 +120,7 @@ class Composition:
 
         return merge
 
+    # Modifiers
     def animate(self, tool: Tool | str, input_name: str) -> BezierSpline:
         match tool:
             case Tool():
@@ -121,15 +139,51 @@ class Composition:
 
         tool.add_source_input(input_name, new_spline.name, "Value")
 
-        if self.modifiers is None:
-            self.modifiers: list[Operator] = []
+        return self._add_modifier(new_spline)
 
-        self.modifiers.append(new_spline)
+    def publish(
+        self,
+        tool: Tool,
+        input: str,
+        value: int | float | tuple[int | float, int | float] | str | FuID,
+    ) -> Tool:
+        id = "Publish"
+        match value:
+            case int() | float():
+                id += "Number"
+            case str():
+                id += "Text"
+            case tuple():
+                id += "Point"
+            case FuID():
+                id += "FuID"
+            case _:
+                raise ValueError
 
-        return new_spline
+        name = f"Publish{tool.name}{input}"
 
-    def publish(self, tool: Tool, input: str) -> Operator:
-        ...
+        new_published_value = Tool(id, name, None)
+        new_published_value.add_inputs(Value=value)
+
+        tool.add_source_input(input, name, "Value")
+
+        return self._add_modifier(new_published_value)
+
+    def connect(
+        self,
+        tool_out: Tool,
+        tool_in: Tool,
+        source_out: str = "Output",
+        source_in: str = "Input",
+    ) -> Composition:
+        tool_in.add_source_input(source_in, tool_out.name, source_out)
+
+        return self
+
+    def connect_to_published_value(
+        self, published_value: Tool, tool_in: Tool, source_in: str
+    ) -> Composition:
+        return self.connect(published_value, tool_in, "Value", source_in)
 
 
 class Operator(Protocol):
