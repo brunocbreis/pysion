@@ -18,6 +18,13 @@ class BezierSpline:
         pairs: list[tuple[int | float, int | float]],
         curve: Curve = Curve.linear(),
     ) -> BezierSpline:
+        # TODO: this does not consider previously added keyframes and thus does not recalculate
+        # easing for previous values.
+        # could check for existing keyframes with frames less than min([pair[0] for pair in pairs])
+        # and more than max([pair[0] for pair in pairs]) and then add them to the list.
+        # and any in between too, cause they will have to be recalculated.
+        # unless there are two in between.
+
         if not pairs:
             return self
 
