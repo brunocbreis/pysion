@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from .named_table import NamedTable, UnnamedTable
 from .tool import Tool
+from .modifier import Modifier
 from .macro import Macro
 from typing import Protocol
 from .input import Input
@@ -146,7 +147,8 @@ class Composition:
         tool: Tool,
         input: str,
         value: int | float | tuple[int | float, int | float] | str | FuID,
-    ) -> Tool:
+    ) -> Modifier:
+
         id = "Publish"
         match value:
             case int() | float():
@@ -162,7 +164,7 @@ class Composition:
 
         name = f"Publish{tool.name}{input}"
 
-        new_published_value = Tool(id, name, None)
+        new_published_value = Modifier(id, name)
         new_published_value.add_inputs(Value=value)
 
         tool.add_source_input(input, name, "Value")
