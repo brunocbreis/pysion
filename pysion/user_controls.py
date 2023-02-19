@@ -21,7 +21,7 @@ class UserControl:
     pretty_name: str
     input_control: str = UC_input_control.slider
     data_type: str = UC_data_type.number
-    is_integer: bool = False
+    is_integer: bool | None = False
     page: str | None = None
     default: int | float | str | None = None
     min_scale: int | float | None = None
