@@ -1,12 +1,14 @@
 from __future__ import annotations
+
+from typing import Protocol, Literal
 from .named_table import NamedTable, UnnamedTable
 from .tool import Tool
-from .modifier import Modifier
+from .modifiers import Modifier, XYPathModifier
 from .macro import Macro
-from typing import Protocol
 from .input import Input
 from .animation import BezierSpline, Curve
 from .named_table import FuID
+from .color import RGBA
 
 try:
     from pyperclip import copy
@@ -199,6 +201,30 @@ class Composition:
         tool[input_name].spline = new_spline
 
         return self._add_modifier(new_spline)
+
+    def animate_position(
+        self,
+        tool: Tool | str,
+        input_name: str = "Center",
+        default_curve: Curve | None = None,
+        method: Literal["XYPath", "Path"] = "XYPath",
+    ) -> tuple[BezierSpline, BezierSpline]:
+        if method != "XYPath":
+            raise NotImplementedError
+
+        name = f"{tool.name}{input_name}XYPath"
+
+        x_spline = BezierSpline(f"{name}X", default_curve, RGBA(1))
+        y_spline = BezierSpline(f"{name}Y", default_curve, RGBA(0, 1))
+
+        xy_path = XYPathModifier(name, x_spline, y_spline)
+
+        self.connect(xy_path, tool, "Value", input_name)
+
+        for mod in [xy_path, x_spline, y_spline]:
+            self._add_modifier(mod)
+
+        return x_spline, y_spline
 
     def publish(
         self,

@@ -33,6 +33,9 @@ class BezierSpline:
 
         return NamedTable(self.id, KeyFrames=keyframes, SplineColor=color)
 
+    def __repr__(self) -> str:
+        return repr(self.render())
+
     def add_keyframes(
         self,
         pairs: list[tuple[int | float, int | float]],
@@ -133,6 +136,9 @@ class BezierSpline:
                 kf.left_hand = (lh_x, lh_y)
 
     def _render_keyframes(self) -> UnnamedTable | None:
+        if not self.keyframes:
+            return None
+
         self._calculate_hands()
         ordered_keyframes = UnnamedTable()
 
