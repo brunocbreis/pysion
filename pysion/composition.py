@@ -216,23 +216,9 @@ class Composition:
         resolution: tuple[int, int] | Literal["auto"] = "auto",
         position: tuple[int, int] = (0, 0),
     ) -> Tool:
-        if resolution == "auto":
-            width, height = None, None
-            use_ff = 1
-        else:
-            width, height = resolution
-            use_ff = 0
-
-        text_plus = Tool("TextPlus", name, position)
-        text_plus.add_inputs(
-            UseFrameFormatSettings=use_ff,
-            Width=width,
-            Height=height,
-            Font=font_face,
-            Style=font_style,
-            StyledText=text,
-        ).add_color_input(color, suffix="1")
-
+        text_plus = Tool.text(
+            name, text, font_face, font_style, color, resolution, position
+        )
         self.add_tools(text_plus)
 
         return text_plus
