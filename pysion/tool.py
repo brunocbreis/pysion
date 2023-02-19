@@ -33,8 +33,8 @@ class Tool:
                     inputs[name] = inp.nt
 
         if self.user_controls:
-            user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(
-                {name: control.nt for name, control in self.user_controls.items()}
+            user_controls: UnnamedTable[str, UnnamedTable] = UnnamedTable(
+                {name: control.render() for name, control in self.user_controls.items()}
             )
 
         return NamedTable(
