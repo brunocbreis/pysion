@@ -1,5 +1,4 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from .named_table import NamedTable, UnnamedTable
 from .tool import Tool
 from .modifier import Modifier
@@ -10,15 +9,27 @@ from .animation import BezierSpline, Curve
 from .named_table import FuID
 
 
-@dataclass
+class Operator(Protocol):
+    @property
+    def name(self) -> str:
+        ...
+
+    def render(self) -> NamedTable | UnnamedTable:
+        ...
+
+
 class Composition:
     """Represents a Fusion composition. Outputs an UnnamedTable with tool names as keys and tools as NamedTables."""
 
-    tools: list[Operator] | None = None
+    def __init__(self, *tools: Tool | Macro) -> None:
+        self.tools: UnnamedTable[str, Tool | Macro] = None
+        self._last_added_tool: Tool = None
 
-    def __post_init__(self) -> None:
-        self.active_tool: Tool | None = None
-        self.modifiers: list[Operator] | None = None
+        if tools:
+            self.add_tools(*tools)
+
+        self.active_tool_name: str | None = None
+        self.modifiers: UnnamedTable[str, Operator] | None = None
 
     def render(self) -> UnnamedTable:
         self._auto_set_active_tool()
@@ -29,42 +40,65 @@ class Composition:
             print("Comp is empty.")
             return None
 
-        return UnnamedTable(Tools=operators, ActiveTool=self.active_tool.name)
+        return UnnamedTable(Tools=operators, ActiveTool=self.active_tool_name)
 
     def __repr__(self) -> str:
         return repr(self.render())
 
+    def __getitem__(self, key: str) -> Operator:
+        assert isinstance(key, str)
+
+        if self.tools is None and self.modifiers is None:
+            raise KeyError
+
+        if self.modifiers is None:
+            return self.tools[key]
+        else:
+            return self.modifiers[key]
+
+    def __setitem__(self, key: str, value: Tool | Macro):
+        assert isinstance(key, str)
+        assert isinstance(value, Tool | Macro)
+
+        self.add_tools(value)
+
     # Private methods
     def _auto_set_active_tool(self) -> None:
-        if not self.active_tool:
-            if self.tools:
-                self.active_tool = self.tools[-1]
+        if not self.tools:
+            self.active_tool_name = None
+            return
+
+        if not self.active_tool_name:
+            self.active_tool_name = self._last_added_tool.name
 
     def _render_operators(self) -> UnnamedTable:
         operators = UnnamedTable(force_indent=True)
 
         if self.tools:
-            operators.update({tool.name: tool.render() for tool in self.tools})
+            operators.update(
+                {tool_name: tool.render() for tool_name, tool in self.tools.items()}
+            )
         if self.modifiers:
             operators.update(
-                {modifier.name: modifier.render() for modifier in self.modifiers}
+                {mod_name: mod.render() for mod_name, mod in self.modifiers.items()}
             )
 
         return operators
 
-    def _add_tool(self, tool: Operator) -> Operator:
+    def _add_tool(self, tool: Tool | Macro) -> Operator:
         if self.tools is None:
-            self.tools: list[Operator] = []
+            self.tools: UnnamedTable[str, Tool | Macro] = UnnamedTable()
 
-        self.tools.append(tool)
+        self.tools[tool.name] = tool
+        self._last_added_tool = tool
 
         return tool
 
     def _add_modifier(self, modifier: Operator) -> Operator:
         if self.modifiers is None:
-            self.modifiers: list[Operator] = []
+            self.modifiers: UnnamedTable[str, Operator] = UnnamedTable()
 
-        self.modifiers.append(modifier)
+        self.modifiers[modifier.name] = modifier
 
         return modifier
 
@@ -127,17 +161,21 @@ class Composition:
     ) -> BezierSpline:
         match tool:
             case Tool():
-                # TODO: test if tool is in comp
+                if tool not in self.tools.values():
+                    print(f"Adding {tool.name} to the comp.")
+                    self.add_tools(tool)
+
                 tool_name = tool.name
             case str():
                 try:
-                    tool = self.tools[tool]
                     tool_name = tool
+                    tool = self[tool]
                 except KeyError:
                     raise ValueError(f"{tool} is not one of the tools in this comp.")
             case _:
                 raise ValueError("Please add a valid Tool or Tool name.")
 
+        print(f"{tool_name=}")
         new_spline = BezierSpline(f"{tool_name}{input_name}", default_curve)
 
         tool.add_source_input(input_name, new_spline.name, "Value")
@@ -189,12 +227,3 @@ class Composition:
         self, published_value: Tool, tool_in: Tool, source_in: str
     ) -> Composition:
         return self.connect(published_value, tool_in, "Value", source_in)
-
-
-class Operator(Protocol):
-    @property
-    def name(self) -> str:
-        ...
-
-    def render(self) -> NamedTable | UnnamedTable:
-        ...
