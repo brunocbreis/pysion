@@ -55,8 +55,10 @@ class Composition:
             return copy(repr(self))
 
         print(
-            "For comp.copy() support, make sure to install optional dependency pyperclip."
+            "For comp.copy() support, make sure to install optional dependency pyperclip.\n"
+            "Printing comp instead.\n"
         )
+        print(self)
 
     def __repr__(self) -> str:
         return repr(self.render())
@@ -178,7 +180,7 @@ class Composition:
         match tool:
             case Tool():
                 if tool not in self.tools.values():
-                    print(f"Adding {tool.name} to the comp.")
+                    print(f"Adding {tool.name} to the comp.\n")
                     self.add_tools(tool)
 
                 tool_name = tool.name
