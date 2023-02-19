@@ -1,5 +1,6 @@
 from pysion.user_controls import UserControl, UC_data_type, UC_input_control
 from pysion.named_table import UnnamedTable
+from pysion import Tool
 
 ucs = [
     UserControl(
@@ -11,3 +12,8 @@ table = UnnamedTable(
     force_indent=True,
 )
 print(table)
+
+tool = Tool("Blur", "SuperBlue")
+tool.add_user_control("Mega Blur")
+
+print(tool)

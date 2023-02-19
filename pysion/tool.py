@@ -60,26 +60,35 @@ class Tool:
     def _render_output(self) -> NamedTable:
         return NamedTable("InstanceOutput", SourceOp=self.name, Source=self.output)
 
-    # Inputs
-    def add_input(self, input: Input) -> Tool:
+    def _add_input(self, input: Input) -> None:
         if self.inputs is None:
             self.inputs = UnnamedTable(force_indent=True)
 
         self.inputs[input.name] = input
 
+    def _add_user_control(self, user_control: UserControl) -> None:
+        if self.user_controls is None:
+            self.user_controls = UnnamedTable(force_indent=True)
+
+        self.user_controls[user_control.name] = user_control
+
+    # Inputs
+    def add_input(self, input: Input) -> Tool:
+        self._add_input(input)
+
         return self
 
-    def add_inputs(self, *inputs, **names_and_values) -> Tool:
+    def add_inputs(self, *inputs: Input, **names_and_values) -> Tool:
         """Add Inputs as a batch. Takes Input() types as positional args, and/or
         key/value pairs as keyword args that map to Input(Key, value=Value)"""
 
         if inputs:
             for input in inputs:
-                self.add_input(input)
+                self._add_input(input)
 
         if names_and_values:
             for k, v in names_and_values.items():
-                self.add_input(Input(k, v))
+                self._add_input(Input(k, v))
 
         return self
 
@@ -126,6 +135,35 @@ class Tool:
         self.inputs["EffectMask"] = Input(
             "EffectMask", source_operator=mask.name, source=mask.output
         )
+
+        return self
+
+    def add_user_control(
+        self,
+        pretty_name: str,
+        input_control: str = "SliderControl",
+        data_type: str = "Number",
+        is_integer: bool = False,
+        page: str | None = None,
+        default: int | float | str | None = None,
+        min_scale: int | float | None = None,
+        max_scale: int | float | None = None,
+        min_allowed: int | float | None = None,
+        max_allowed: int | float | None = None,
+    ) -> Tool:
+        new_user_control = UserControl(
+            pretty_name,
+            input_control,
+            data_type,
+            is_integer,
+            page,
+            default,
+            min_scale,
+            max_scale,
+            min_allowed,
+            max_allowed,
+        )
+        self._add_user_control(new_user_control)
 
         return self
 
