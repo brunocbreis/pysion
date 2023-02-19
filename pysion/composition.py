@@ -222,7 +222,7 @@ class Composition:
             StyledText=text,
         ).add_color_input(color, suffix="1")
 
-        return text
+        return text_plus
 
     # Modifiers
     def animate(
