@@ -23,4 +23,4 @@ macro.add_tools(Tool("Blur", "MyBlur"))
 
 comp["MyMacro"] = macro
 
-print(comp)
+comp.copy()

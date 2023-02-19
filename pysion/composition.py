@@ -190,7 +190,6 @@ class Composition:
             case _:
                 raise ValueError("Please add a valid Tool or Tool name.")
 
-        print(f"{tool_name=}")
         new_spline = BezierSpline(f"{tool_name}{input_name}", default_curve)
 
         tool.add_source_input(input_name, new_spline.name, "Value")
