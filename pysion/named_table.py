@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections import UserDict, UserList
 from typing import Any
+from enum import Enum
 
 
 class NamedTable(UserDict):
@@ -76,6 +77,8 @@ class NamedTable(UserDict):
                     v = lowercase_bool(v)
                 case dict():
                     v = UnnamedTable(v).render(lvl + 1)
+                case Enum():
+                    v = v.value
                 case None:
                     continue
 

@@ -1,26 +1,26 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from .named_table import NamedTable, UnnamedTable
-from types import SimpleNamespace
+from .named_table import UnnamedTable
+from enum import Enum
 
 
-class UC(SimpleNamespace):
-    class data_type(SimpleNamespace):
-        number = "Number"
-        point = "Point"
-        text = "Text"
+class UC_data_type(Enum):
+    number = "Number"
+    point = "Point"
+    text = "Text"
 
-    class input_control(SimpleNamespace):
-        slider = "SliderControl"
-        combo = "ComboControl"
-        screw = "ScrewControl"
+
+class UC_input_control(Enum):
+    slider = "SliderControl"
+    combo = "ComboControl"
+    screw = "ScrewControl"
 
 
 @dataclass
 class UserControl:
     pretty_name: str
-    input_control: str = UC.input_control.slider
-    data_type: str = UC.data_type.number
+    input_control: str = UC_input_control.slider
+    data_type: str = UC_data_type.number
     is_integer: bool = False
     page: str | None = None
     default: int | float | str | None = None

@@ -1,9 +1,9 @@
-from pysion.user_controls import UserControl, UC
+from pysion.user_controls import UserControl, UC_data_type, UC_input_control
 from pysion.named_table import UnnamedTable
 
 ucs = [
     UserControl(
-        "My Slider", data_type=UC.data_type.number, input_control=UC.input_control.screw
+        "My Slider", data_type=UC_data_type.number, input_control=UC_input_control.screw
     )
 ]
 table = UnnamedTable(
