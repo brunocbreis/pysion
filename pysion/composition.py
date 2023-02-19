@@ -222,6 +222,8 @@ class Composition:
             StyledText=text,
         ).add_color_input(color, suffix="1")
 
+        self.add_tools(text_plus)
+
         return text_plus
 
     # Modifiers
