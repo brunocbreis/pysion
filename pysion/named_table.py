@@ -74,6 +74,8 @@ class NamedTable(UserDict):
                     v = tuple_as_table(v)
                 case bool():
                     v = lowercase_bool(v)
+                case dict():
+                    v = UnnamedTable(v).render(lvl + 1)
                 case None:
                     continue
 
