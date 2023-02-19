@@ -56,6 +56,24 @@ class Tool:
     def __getitem__(self, key: str) -> Input:
         return self.inputs[key]
 
+    def __setitem__(
+        self, key: str, value: int | float | str | tuple[float, float]
+    ) -> None:
+        assert isinstance(key, str)
+
+        if key in self.inputs:
+            if self.inputs[key].spline:
+                raise ValueError(
+                    "Input has a Spline. Please assign values to specific keyframes with input[time] = value"
+                )
+
+        if isinstance(value, str):
+            print(
+                f"Warning: assigning {value} as text to {key}. To add an expression, use tool.add_expression_input()"
+            )
+
+        self.inputs[key] = Input(key, value)
+
     @property
     def position_nt(self) -> NamedTable | None:
         return self._render_position()

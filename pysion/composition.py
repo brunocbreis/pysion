@@ -6,7 +6,7 @@ from .modifier import Modifier
 from .macro import Macro
 from typing import Protocol
 from .input import Input
-from .animation import BezierSpline
+from .animation import BezierSpline, Curve
 from .named_table import FuID
 
 
@@ -122,7 +122,9 @@ class Composition:
         return merge
 
     # Modifiers
-    def animate(self, tool: Tool | str, input_name: str) -> BezierSpline:
+    def animate(
+        self, tool: Tool | str, input_name: str, default_curve: Curve | None = None
+    ) -> BezierSpline:
         match tool:
             case Tool():
                 # TODO: test if tool is in comp
@@ -136,7 +138,7 @@ class Composition:
             case _:
                 raise ValueError("Please add a valid Tool or Tool name.")
 
-        new_spline = BezierSpline(f"{tool_name}{input_name}")
+        new_spline = BezierSpline(f"{tool_name}{input_name}", default_curve)
 
         tool.add_source_input(input_name, new_spline.name, "Value")
         tool[input_name].spline = new_spline
