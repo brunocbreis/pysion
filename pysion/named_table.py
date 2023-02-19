@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import UserDict, UserList
+from typing import Any
 
 
 class NamedTable(UserDict):
@@ -57,6 +58,9 @@ class NamedTable(UserDict):
         s = f"{name}{{ {br}"
 
         for k, v in self.data.items():
+            match k:
+                case int() | float():
+                    k = keyframe(k)
             match v:
                 case str():
                     v = quoted_string(v)
@@ -68,6 +72,10 @@ class NamedTable(UserDict):
                     v = list_as_table(v)
                 case tuple():
                     v = tuple_as_table(v)
+                case bool():
+                    v = lowercase_bool(v)
+                case dict():
+                    v = UnnamedTable(v).render(lvl + 1)
                 case None:
                     continue
 
@@ -101,6 +109,24 @@ class NamedTable(UserDict):
         # print("Doesn't need to indent.")
         return False
 
+    def ordered(self, reverse: bool = False) -> list[tuple[str | int | float, Any]]:
+        """Returns the NamedTable as a sorted list of tuple[key, val], by keys.
+        Useful for a table of keyframes that need to be sorted by time."""
+
+        if self.data is None:
+
+            return None
+
+        data_list = []
+
+        for k, v in self.items():
+            pair = (k, v)
+            data_list.append(pair)
+
+        data_list.sort(key=lambda x: x[0], reverse=reverse)
+
+        return data_list
+
 
 class UnnamedTable(NamedTable):
     def __init__(self, dict: NamedTable = None, /, force_indent=False, **kwargs):
@@ -130,6 +156,8 @@ class IndentedList(UserList):
                     i = list_as_table(i)
                 case tuple():
                     i = tuple_as_table(i)
+                case bool():
+                    i = lowercase_bool(i)
                 case None:
                     continue
 
@@ -161,3 +189,11 @@ def list_as_table(ls: list) -> str:
 
 def tuple_as_table(tp: tuple) -> str:
     return repr(tp).replace("(", "{ ").replace(")", " }")
+
+
+def lowercase_bool(b: bool) -> str:
+    return repr(b).lower()
+
+
+def keyframe(n: int | float) -> str:
+    return f"[{n}]"

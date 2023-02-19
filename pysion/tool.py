@@ -14,7 +14,7 @@ class Tool:
 
     id: str
     name: str
-    position: tuple[int, int] = (0, 0)
+    position: tuple[int, int] | None = (0, 0)
     inputs: UnnamedTable[str, Input] | None = None
     output: str = "Output"
     user_controls: UnnamedTable[str, UserControl] | None = None
@@ -33,8 +33,8 @@ class Tool:
                     inputs[name] = inp.nt
 
         if self.user_controls:
-            user_controls: UnnamedTable[str, NamedTable] = UnnamedTable(
-                {name: control.nt for name, control in self.user_controls.items()}
+            user_controls: UnnamedTable[str, UnnamedTable] = UnnamedTable(
+                {name: control.render() for name, control in self.user_controls.items()}
             )
 
         return NamedTable(
@@ -48,11 +48,13 @@ class Tool:
     def __repr__(self) -> str:
         return repr(self.render())
 
-    def _render_position(self) -> NamedTable:
+    def _render_position(self) -> NamedTable | None:
+        if self.position is None:
+            return None
         return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
 
     @property
-    def position_nt(self) -> NamedTable:
+    def position_nt(self) -> NamedTable | None:
         return self._render_position()
 
     def _render_output(self) -> NamedTable:
