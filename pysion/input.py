@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from .named_table import NamedTable, UnnamedTable
+from .animation import BezierSpline
 
 
 @dataclass
@@ -12,10 +13,11 @@ class Input:
     expression: str | None = None
     source_operator: str | None = None
     source: str | None = None
+    spline: BezierSpline | None = None
 
     @property
     def nt(self) -> NamedTable:
-        # print("Rendering", self.name)
+
         return NamedTable(
             "Input",
             Value=self.value,
@@ -26,6 +28,16 @@ class Input:
 
     def __repr__(self) -> str:
         return repr(self.nt)
+
+    def __setitem__(self, key: int | float, value: int | float) -> None:
+        assert (
+            self.spline is not None
+        ), "Please add a BezierSpline first with comp.animate()"
+
+        self.spline.add_keyframes([(key, value)])
+
+    def __getitem__(self, key: int | float) -> int | float:
+        return self.spline.keyframes[key].value
 
     @classmethod
     def mask(cls, source_operator: str, source: str = "Mask") -> Input:
@@ -40,7 +52,6 @@ class Polyline:
 
     def __post_init__(self) -> None:
         self._inputs: list[Input] | None = None
-        ...
 
     def _render(self) -> None:
 

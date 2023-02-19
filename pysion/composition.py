@@ -139,6 +139,7 @@ class Composition:
         new_spline = BezierSpline(f"{tool_name}{input_name}")
 
         tool.add_source_input(input_name, new_spline.name, "Value")
+        tool[input_name].spline = new_spline
 
         return self._add_modifier(new_spline)
 

@@ -3,34 +3,66 @@ from ..named_table import NamedTable, UnnamedTable
 from dataclasses import dataclass
 from .keyframe import Keyframe
 from .curve import Curve
+from ..color import RGBA
 
 
 @dataclass
 class BezierSpline:
     name: str
+    default_curve: Curve = None
+    color: RGBA | None = None
 
     def __post_init__(self):
         self.id = "BezierSpline"
         self.keyframes: UnnamedTable[int | float, Keyframe] | None = None
 
+        if self.default_curve is None:
+            self.default_curve = Curve.linear()
+
+    def __setitem__(self, key: int | float, value: int | float) -> None:
+        assert isinstance(key, int) | isinstance(key, float), "Frame must be a number."
+
+        self.add_keyframes([(key, value)], self.default_curve)
+
+    def __getitem__(self, key: int | float) -> Keyframe:
+        return self.keyframes[key]
+
     def render(self) -> NamedTable:
         keyframes = self._render_keyframes()
+        color = self._render_color()
 
-        return NamedTable(self.id, KeyFrames=keyframes)
+        return NamedTable(self.id, KeyFrames=keyframes, SplineColor=color)
 
     def add_keyframes(
         self,
         pairs: list[tuple[int | float, int | float]],
-        curve: Curve = Curve.linear(),
+        curve: Curve | None = None,
     ) -> BezierSpline:
         if not pairs:
             return self
+
+        if curve is None:
+            curve = self.default_curve
 
         for pair in pairs:
             kf = Keyframe(*pair, curve)
             self._add_keyframe(kf)
 
         return self
+
+    def apply_curve(self, curve: Curve) -> None:
+        """Applies the same curve to all existing keyframes. Overrides previously set curves."""
+
+        if not self.keyframes:
+            print(f"No keyframes have been added. Setting default curve to {curve}")
+            self.default_curve = curve
+            return None
+
+        for keyframe in self.keyframes.values():
+            keyframe.add_curve(curve)
+
+    def set_spline_color(self, color: RGBA) -> None:
+        self.color = color
 
     # Private methods
     def _add_keyframe(self, kf: Keyframe) -> None:
@@ -108,3 +140,14 @@ class BezierSpline:
             ordered_keyframes[frame] = keyframe
 
         return ordered_keyframes
+
+    def _render_color(self) -> UnnamedTable | None:
+        if not self.color:
+            return None
+
+        return UnnamedTable(
+            Red=int(self.color.red * 255),
+            Green=int(self.color.green * 255),
+            Blue=int(self.color.blue * 255),
+            force_unindent=True,
+        )

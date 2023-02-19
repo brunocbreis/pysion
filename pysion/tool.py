@@ -53,6 +53,9 @@ class Tool:
             return None
         return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
 
+    def __getitem__(self, key: str) -> Input:
+        return self.inputs[key]
+
     @property
     def position_nt(self) -> NamedTable | None:
         return self._render_position()

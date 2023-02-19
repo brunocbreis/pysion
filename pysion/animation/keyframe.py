@@ -76,3 +76,7 @@ class Keyframe(UserDict):
         self.step_out = step_out
 
         return self
+
+    def add_curve(self, curve: Curve) -> None:
+        self.rel_right_hand = curve.right_hand
+        self.rel_left_hand = curve.left_hand
