@@ -214,8 +214,7 @@ class Composition:
         tool: Tool | str,
         input_name: str = "Center",
         default_curve: Curve | None = None,
-        keyframes_x: list[tuple[int | float, int | float]] | None = None,
-        keyframes_y: list[tuple[int | float, int | float]] | None = None,
+        keyframes: list[tuple[int | float, tuple[float, float]]] | None = None,
         /,
         method: Literal["XYPath", "Path"] = "XYPath",
     ) -> tuple[BezierSpline, BezierSpline]:
@@ -234,9 +233,11 @@ class Composition:
         for mod in [xy_path, x_spline, y_spline]:
             self._add_modifier(mod)
 
-        if keyframes_x:
+        if keyframes:
+            keyframes_x = [(kf[0], kf[1][0]) for kf in keyframes]
+            keyframes_y = [(kf[0], kf[1][1]) for kf in keyframes]
+
             x_spline.add_keyframes(keyframes_x)
-        if keyframes_y:
             y_spline.add_keyframes(keyframes_y)
 
         return x_spline, y_spline
