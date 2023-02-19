@@ -157,6 +157,7 @@ class Composition:
 
         return self
 
+    # Specific tools
     def add_merge(
         self,
         name: str,
@@ -193,6 +194,35 @@ class Composition:
         merge.add_inputs(bg_input, fg_input)
 
         return merge
+
+    def add_text(
+        self,
+        name: str,
+        text: str,
+        font_face: str = "Open Sans",
+        font_style: str = "Bold",
+        color: RGBA = RGBA(1, 1, 1),
+        resolution: tuple[int, int] | Literal["auto"] = "auto",
+        position: tuple[int, int] = (0, 0),
+    ) -> Tool:
+        if resolution == "auto":
+            width, height = None, None
+            use_ff = 1
+        else:
+            width, height = resolution
+            use_ff = 0
+
+        text_plus = Tool("TextPlus", name, position)
+        text_plus.add_inputs(
+            UseFrameFormatSettings=use_ff,
+            Width=width,
+            Height=height,
+            Font=font_face,
+            Style=font_style,
+            StyledText=text,
+        ).add_color_input(color, suffix="1")
+
+        return text
 
     # Modifiers
     def animate(
