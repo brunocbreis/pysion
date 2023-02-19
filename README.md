@@ -1,6 +1,6 @@
 !["Pysion"](https://github.com/brunocbreis/pysion/blob/main/images/pysion-logo.png)
 
- ![version: beta](https://img.shields.io/badge/version-beta-blue)   [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/brunoreis)
+ ![version](http://shields.io/github/v/release/brunocbreis/pysion?display_name=tag)   [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/brunoreis)
 
 ## A more pythonic way to create Fusion compositions
 
