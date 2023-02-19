@@ -53,7 +53,7 @@ The output...
 
 ... which results in an orange rectangle when pasted into Fusion:
 
-!["A screenshot of the Blackmagic Fusion UI, with two nodes and the resulting orange rectangle that the code above produced."](https://github.com/brunocbreis/pysion/blob/master/images/example1-screenshot.png)
+!["A screenshot of the Blackmagic Fusion UI, with two nodes and the resulting orange rectangle that the code above produced."](https://github.com/brunocbreis/pysion/blob/main/images/example1-screenshot.png)
 
 ## How to install
 
