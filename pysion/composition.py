@@ -177,7 +177,11 @@ class Composition:
 
     # Modifiers
     def animate(
-        self, tool: Tool | str, input_name: str, default_curve: Curve | None = None
+        self,
+        tool: Tool | str,
+        input_name: str,
+        default_curve: Curve | None = None,
+        keyframes: list[tuple[int | float, int | float]] | None = None,
     ) -> BezierSpline:
         match tool:
             case Tool():
@@ -200,6 +204,9 @@ class Composition:
         tool.add_source_input(input_name, new_spline.name, "Value")
         tool[input_name].spline = new_spline
 
+        if keyframes:
+            new_spline.add_keyframes(keyframes)
+
         return self._add_modifier(new_spline)
 
     def animate_position(
@@ -207,6 +214,9 @@ class Composition:
         tool: Tool | str,
         input_name: str = "Center",
         default_curve: Curve | None = None,
+        keyframes_x: list[tuple[int | float, int | float]] | None = None,
+        keyframes_y: list[tuple[int | float, int | float]] | None = None,
+        /,
         method: Literal["XYPath", "Path"] = "XYPath",
     ) -> tuple[BezierSpline, BezierSpline]:
         if method != "XYPath":
@@ -223,6 +233,11 @@ class Composition:
 
         for mod in [xy_path, x_spline, y_spline]:
             self._add_modifier(mod)
+
+        if keyframes_x:
+            x_spline.add_keyframes(keyframes_x)
+        if keyframes_y:
+            y_spline.add_keyframes(keyframes_y)
 
         return x_spline, y_spline
 
