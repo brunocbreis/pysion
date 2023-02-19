@@ -29,7 +29,13 @@ class Operator(Protocol):
 
 
 class Composition:
-    """Represents a Fusion composition. Outputs an UnnamedTable with tool names as keys and tools as NamedTables."""
+    """Represents a Fusion composition. Printing a comp (or better: using built in copy/save methods) will result in Fusion-compatible code.
+
+    Optional Arguments
+    ----------------
+    - *tools : Tools or Macros
+        Optionally initialize a comp with some previously created tools.
+    """
 
     def __init__(self, *tools: Tool | Macro) -> None:
         self.tools: UnnamedTable[str, Tool | Macro] = None
@@ -54,6 +60,8 @@ class Composition:
         return UnnamedTable(Tools=operators, ActiveTool=self.active_tool_name)
 
     def copy(self) -> None:
+        """Copies Fusion-compatible code to the clipboard. Requires pyperclip [pip install pyperclip]."""
+
         if PYPERCLIP_INSTALLED:
             print("Successfully copied node tree to the clipboard.")
             return copy(repr(self))
@@ -67,6 +75,8 @@ class Composition:
     def save(
         self, file_name: str, folder: str | Path, file_extension: str = "setting"
     ) -> None:
+        """Saves comp to a Fusion .setting text file."""
+
         if isinstance(folder, str):
             folder = Path(folder)
 
@@ -144,11 +154,39 @@ class Composition:
     # Public methods
     # Tools
     def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
+        """Creates a new Tool and adds it to the comp.
+
+        Arguments
+        ----------
+        - id : str
+            An existing Fusion tool id. Examples: "Background", "TextPlus", "Blur"
+        - name : str
+            A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+        - position : tuple[int,int]
+            X, Y Coordinates for positioning the tool in the Flow.
+
+        Returns
+        ----
+        The newly created Tool.
+
+        """
         new_tool = Tool(id, name, position)
 
         return self._add_tool(new_tool)
 
     def add_tools(self, *tools: Operator) -> Composition:
+        """Batch add tools, macros or any kind of operator to a comp.
+
+        Arguments
+        ----------
+        - *tools: Operator (Tool, Macro or Modifier)
+
+        Returns
+        ----
+        Self.
+
+        """
+
         if not tools:
             return self
 
@@ -165,6 +203,26 @@ class Composition:
         foreground: Tool | Macro | None,
         position: tuple[float, float] = (0, 0),
     ) -> Tool:
+        """Creates a new Merge Tool and adds it to the comp. Can also automatically connect other tools to the merge's
+        Background and Foreground inputs. If the tools are not yet in the comp, they will be added.
+
+        Arguments
+        ----------
+        - name : str
+            A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+        - background : Tool, Macro or None
+            The tool's output will be added to the merge's Background input.
+        - foreground : Tool, Macro or None
+            The tool's output will be added to the merge's Foreground input.
+        - position : tuple[int,int]
+            X, Y Coordinates for positioning the merge in the Flow.
+
+        Returns
+        ----
+        The newly created Merge Tool.
+
+        """
+
         merge = Tool("Merge", name, position)
 
         match background:
@@ -216,6 +274,31 @@ class Composition:
         resolution: tuple[int, int] | Literal["auto"] = "auto",
         position: tuple[int, int] = (0, 0),
     ) -> Tool:
+        """Creates a new Text+ Tool with sensible defaults and adds it to the comp.
+
+        Arguments
+        ----------
+        - name : str
+            A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+        - text : str
+            Text that will be added as the Value to StyledText input.
+        - font_face : str
+            Text that will be added as the Value to Font input.
+        - font_style : str
+            Text that will be added as the Value to Style input.
+        - color : RGBA
+            Adds values to Text+ main color inputs. Default white.
+        - resolution : tuple[int,int]
+            Adds value to Text+ UseFrameFormatSettings (if auto) and/or Width/Height.
+        - position : tuple[int,int]
+            X, Y Coordinates for positioning the merge in the Flow.
+
+        Returns
+        ----
+        The newly created Text+ Tool.
+
+        """
+
         text_plus = Tool.text(
             name, text, font_face, font_style, color, resolution, position
         )
@@ -231,6 +314,24 @@ class Composition:
         default_curve: Curve | None = None,
         keyframes: list[tuple[int | float, int | float]] | None = None,
     ) -> BezierSpline:
+        """Creates a BezierSpline modifier to animate an input with keyframes. See animate_position for point inputs.
+
+        Arguments
+        -----
+        - tool : Tool or str (for tool name)
+            A Tool or a tool name if the tool already exists in the comp.
+        - input_name : str
+            Input to be animated. Will be created if doesn't exist yet. Will overwirte existing value if there was any.
+        - default_curve : Curve | None
+            Optionally add a default curve to be applied to all keyframes.
+        - keyframes : list[tuple[int | float, int | float]] | None
+            Optionally add keyframes as a list of tuples (frame, value) to animate immediately.
+
+        Returns
+        ----
+        The newly created BezierSpline. Assign it to a new variable and add keyframes by assigning spline[frame] to a value or using the spline.add_keyframe method.
+
+        """
         match tool:
             case Tool():
                 if tool not in self.tools.values():
@@ -266,6 +367,27 @@ class Composition:
         keyframes: list[tuple[int | float, tuple[float, float]]] | None = None,
         method: Literal["XYPath", "Path"] = "XYPath",
     ) -> XYPathModifier:
+        """Creates a XYPathModifier to animate a positional input with keyframes.
+
+        Arguments
+        -----
+        - tool : Tool or str (for tool name)
+            A Tool or a tool name if the tool already exists in the comp.
+        - input_name : str default="Center"
+            Input to be animated. Will be created if doesn't exist yet. Will overwirte existing value if there was any. Should be an input of type Point in Fusion (like Center or Pivot).
+        - default_curve_x : Curve | None
+            Optionally add a default curve to be applied to all keyframes in X.
+        - default_curve_y : Curve | None
+            Optionally add a default curve to be applied to all keyframes in Y. Leave as None to apply the default X Curve to Y as well.
+        - keyframes : list[tuple[int | float, int | float]] | None
+            Optionally add keyframes as a list of tuples (frame, (x, y)) to animate immediately.
+
+        Returns
+        ----
+        The newly created XYPathModifier. Assign it to a new variable and add keyframes by assigning xy_path[frame] to a tuple (x, y) or using the add_keyframe method on xy_path.x_spline or xy_path.y_spline.
+
+        """
+
         if method != "XYPath":
             raise NotImplementedError
 
