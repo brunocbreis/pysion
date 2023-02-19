@@ -51,6 +51,7 @@ class Composition:
 
     def copy(self) -> None:
         if PYPERCLIP_INSTALLED:
+            print("Successfully copied node tree to the clipboard.")
             return copy(repr(self))
 
         print(
