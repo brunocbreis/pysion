@@ -30,5 +30,8 @@ mrg = pysion.Tool.merge("MergeTitle", bg, title, position=(0, 1))
 # And adding the manually created tools to the comp
 comp.add_tools(bg, mrg)
 
+# The line below is an alternative that adds the tools and creates the merge in one go:
+# comp.add_merge("MergeTitle", bg, title, position=(0, 1))
+
 # Copying the comp code to the clipboard
 comp.copy()
