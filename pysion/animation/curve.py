@@ -29,6 +29,18 @@ class Curve:
         return Curve((strength, 0), (strength, 0), "Ease In and Out")
 
     @classmethod
+    def decelerate_in(cls, strength: float = 1) -> Curve:
+        return Curve((0, strength), None, "Decelerate in")
+
+    @classmethod
+    def decelerate_out(cls, strength: float = 1) -> Curve:
+        return Curve(None, (0, strength), "Decelerate out")
+
+    @classmethod
+    def decelerate_in_and_out(cls, strength: float = 1) -> Curve:
+        return Curve((0, strength), (0, strength), "Decelerate in and out")
+
+    @classmethod
     def flat(cls) -> Curve:
         return Curve.ease_in_and_out()
 
