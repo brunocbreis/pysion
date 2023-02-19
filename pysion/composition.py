@@ -8,6 +8,13 @@ from .input import Input
 from .animation import BezierSpline, Curve
 from .named_table import FuID
 
+try:
+    from pyperclip import copy
+
+    PYPERCLIP_INSTALLED = True
+except ImportError:
+    PYPERCLIP_INSTALLED = False
+
 
 class Operator(Protocol):
     @property
@@ -41,6 +48,14 @@ class Composition:
             return None
 
         return UnnamedTable(Tools=operators, ActiveTool=self.active_tool_name)
+
+    def copy(self) -> None:
+        if PYPERCLIP_INSTALLED:
+            return copy(repr(self))
+
+        print(
+            "For comp.copy() support, make sure to install optional dependency pyperclip."
+        )
 
     def __repr__(self) -> str:
         return repr(self.render())
