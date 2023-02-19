@@ -213,18 +213,21 @@ class Composition:
         self,
         tool: Tool | str,
         input_name: str = "Center",
-        default_curve: Curve | None = None,
+        default_curve_x: Curve | None = None,
+        default_curve_y: Curve | None = None,
         keyframes: list[tuple[int | float, tuple[float, float]]] | None = None,
-        /,
         method: Literal["XYPath", "Path"] = "XYPath",
-    ) -> tuple[BezierSpline, BezierSpline]:
+    ) -> XYPathModifier:
         if method != "XYPath":
             raise NotImplementedError
 
         name = f"{tool.name}{input_name}XYPath"
 
-        x_spline = BezierSpline(f"{name}X", default_curve, RGBA(1))
-        y_spline = BezierSpline(f"{name}Y", default_curve, RGBA(0, 1))
+        if default_curve_x and not default_curve_y:
+            default_curve_y = default_curve_x
+
+        x_spline = BezierSpline(f"{name}X", default_curve_x, RGBA(1))
+        y_spline = BezierSpline(f"{name}Y", default_curve_y, RGBA(0, 1))
 
         xy_path = XYPathModifier(name, x_spline, y_spline)
 
@@ -240,7 +243,7 @@ class Composition:
             x_spline.add_keyframes(keyframes_x)
             y_spline.add_keyframes(keyframes_y)
 
-        return x_spline, y_spline
+        return xy_path
 
     def publish(
         self,

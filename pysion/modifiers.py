@@ -37,3 +37,25 @@ class XYPathModifier(Modifier):
         nt.update(ShowKeyPoints=self.show_key_points)
 
         return nt
+
+    def __setitem__(self, key: int | float, value: tuple[float | None, float | None]):
+        assert isinstance(key, int | float)
+        assert isinstance(value, tuple), "Usage ="
+        assert len(value) == 2, "To skip a keyframe, use None value. Ex: (.5,None)"
+
+        if value[0]:
+            self.x_spline[key] = value[0]
+        if value[1]:
+            self.y_spline[key] = value[1]
+
+    def __getitem__(self, key: str) -> tuple[int | float | None, int | float | None]:
+        try:
+            x = self.x_spline[key]
+        except KeyError:
+            x = None
+        try:
+            y = self.y_spline[key]
+        except KeyError:
+            y = None
+
+        return x, y
