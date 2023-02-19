@@ -12,4 +12,4 @@ xy[0] = (0.5, 1)
 xy[12] = (None, 0.5)
 xy[24] = (0.25, None)
 
-comp.copy()
+comp.save("XY_Path", "exports")

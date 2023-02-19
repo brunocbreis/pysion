@@ -1,4 +1,5 @@
 from __future__ import annotations
+from pathlib import Path
 
 from typing import Protocol, Literal
 from .named_table import NamedTable, UnnamedTable
@@ -40,6 +41,7 @@ class Composition:
         self.active_tool_name: str | None = None
         self.modifiers: UnnamedTable[str, Operator] | None = None
 
+    # Finishing methods
     def render(self) -> UnnamedTable:
         self._auto_set_active_tool()
 
@@ -62,6 +64,23 @@ class Composition:
         )
         print(self)
 
+    def save(
+        self, file_name: str, folder: str | Path, file_extension: str = "setting"
+    ) -> None:
+        if isinstance(folder, str):
+            folder = Path(folder)
+
+        file = folder / f"{file_name}.{file_extension}"
+
+        if file.is_file():
+            raise FileExistsError
+
+        with open(file, "w") as f:
+            f.write(repr(self))
+
+        return None
+
+    # Dunder methods
     def __repr__(self) -> str:
         return repr(self.render())
 
