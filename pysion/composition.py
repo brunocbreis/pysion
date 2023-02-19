@@ -163,7 +163,7 @@ class Composition:
         name: str,
         background: Tool | Macro | None,
         foreground: Tool | Macro | None,
-        position: tuple[float, float],
+        position: tuple[float, float] = (0, 0),
     ) -> Tool:
         merge = Tool("Merge", name, position)
 
@@ -191,7 +191,18 @@ class Composition:
                 "Foreground", source_operator=foreground.name, source=fg_output
             )
 
+        # Add tools to comp if not already
+        if background not in self.tools.values():
+            if background is not None:
+                self.add_tools(background)
+
+        if foreground not in self.tools.values():
+            if foreground is not None:
+                self.add_tools(foreground)
+
         merge.add_inputs(bg_input, fg_input)
+
+        self.add_tools(merge)
 
         return merge
 
