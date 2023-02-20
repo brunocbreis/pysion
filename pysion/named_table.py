@@ -29,12 +29,12 @@ class NamedTable(UserDict):
         return self.render(self.level)
 
     def __len__(self) -> int:
-        l = 0
+        length = 0
         for v in self.values():
             if v is None:
                 continue
-            l += 1
-        return l
+            length += 1
+        return length
 
     def render(self, lvl: int = 1) -> str:
         if self.must_indent():

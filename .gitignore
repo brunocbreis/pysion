@@ -10,3 +10,4 @@ reference/
 images/*.psd
 docs/
 exports/
+.coverage

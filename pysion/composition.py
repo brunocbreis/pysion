@@ -102,8 +102,11 @@ class Composition:
 
         if self.modifiers is None:
             return self.tools[key]
-        else:
+
+        try:
             return self.modifiers[key]
+        except KeyError:
+            return self.tools[key]
 
     def __setitem__(self, key: str, value: Tool | Macro):
         assert isinstance(key, str)
@@ -329,7 +332,8 @@ class Composition:
 
         Returns
         ----
-        The newly created BezierSpline. Assign it to a new variable and add keyframes by assigning spline[frame] to a value or using the spline.add_keyframe method.
+        The newly created BezierSpline. Assign it to a new variable and add keyframes
+        by assigning spline[frame] to a value or using the spline.add_keyframe method.
 
         """
         match tool:
@@ -374,7 +378,8 @@ class Composition:
         - tool : Tool or str (for tool name)
             A Tool or a tool name if the tool already exists in the comp.
         - input_name : str default="Center"
-            Input to be animated. Will be created if doesn't exist yet. Will overwirte existing value if there was any. Should be an input of type Point in Fusion (like Center or Pivot).
+            Input to be animated. Will be created if doesn't exist yet. Will overwirte existing value if there was any.
+            Should be an input of type Point in Fusion (like Center or Pivot).
         - default_curve_x : Curve | None
             Optionally add a default curve to be applied to all keyframes in X.
         - default_curve_y : Curve | None
@@ -384,14 +389,30 @@ class Composition:
 
         Returns
         ----
-        The newly created XYPathModifier. Assign it to a new variable and add keyframes by assigning xy_path[frame] to a tuple (x, y) or using the add_keyframe method on xy_path.x_spline or xy_path.y_spline.
+        The newly created XYPathModifier. Assign it to a new variable and add keyframes by
+        assigning xy_path[frame] to a tuple (x, y) or using the add_keyframe method on xy_path.x_spline or xy_path.y_spline.
 
         """
+        match tool:
+            case Tool():
+                if tool not in self.tools.values():
+                    print(f"Adding {tool.name} to the comp.\n")
+                    self.add_tools(tool)
+
+                tool_name = tool.name
+            case str():
+                try:
+                    tool_name = tool
+                    tool = self[tool]
+                except KeyError:
+                    raise ValueError(f"{tool} is not one of the tools in this comp.")
+            case _:
+                raise ValueError("Please add a valid Tool or Tool name.")
 
         if method != "XYPath":
             raise NotImplementedError
 
-        name = f"{tool.name}{input_name}XYPath"
+        name = f"{tool_name}{input_name}XYPath"
 
         if default_curve_x and not default_curve_y:
             default_curve_y = default_curve_x

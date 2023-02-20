@@ -1,0 +1,79 @@
+{ 
+	Tools = { 
+		MyBackground = Background { 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+		MyBlur = Blur { 
+			ViewInfo = OperatorInfo { Pos = { 110, 0 }, }, 
+		}, 
+		MyXF = Transform { 
+			Inputs = { 
+				Center = Input { 
+					SourceOp = "MyXFCenterXYPath", 
+					Source = "Value", 
+				}, 
+				Pivot = Input { 
+					SourceOp = "MyXFPivotXYPath", 
+					Source = "Value", 
+				}, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 220, 0 }, }, 
+		}, 
+		MyXFCenterXYPath = XYPath { 
+			Inputs = { 
+				X = Input { 
+					SourceOp = "MyXFCenterXYPathX", 
+					Source = "Value", 
+				}, 
+				Y = Input { 
+					SourceOp = "MyXFCenterXYPathY", 
+					Source = "Value", 
+				}, 
+			}, 
+			ShowKeyPoints = false, 
+		}, 
+		MyXFCenterXYPathX = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0.5, RH = { 0, 0.25 }, }, 
+				[24] = { 0.25, LH = { 24, 0.5 }, }, 
+			}, 
+			SplineColor = { Red = 255, Green = 0, Blue = 0, }, 
+		}, 
+		MyXFCenterXYPathY = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0.5, RH = { 0, 0.8 }, }, 
+				[12] = { 0.8, RH = { 12, 0.5 }, LH = { 12, 0.5 }, }, 
+				[24] = { 0.5, LH = { 24, 0.8 }, }, 
+			}, 
+			SplineColor = { Red = 0, Green = 255, Blue = 0, }, 
+		}, 
+		MyXFPivotXYPath = XYPath { 
+			Inputs = { 
+				X = Input { 
+					SourceOp = "MyXFPivotXYPathX", 
+					Source = "Value", 
+				}, 
+				Y = Input { 
+					SourceOp = "MyXFPivotXYPathY", 
+					Source = "Value", 
+				}, 
+			}, 
+			ShowKeyPoints = false, 
+		}, 
+		MyXFPivotXYPathX = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0.3, }, 
+				[24] = { 0.2, LH = { 24, 0.3 }, }, 
+			}, 
+			SplineColor = { Red = 255, Green = 0, Blue = 0, }, 
+		}, 
+		MyXFPivotXYPathY = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0.4, RH = { 8.0, 0.4 }, }, 
+				[24] = { 0.5, }, 
+			}, 
+			SplineColor = { Red = 0, Green = 255, Blue = 0, }, 
+		}, 
+	}, 
+	ActiveTool = "MyXF", 
+}

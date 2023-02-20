@@ -1,0 +1,14 @@
+{ 
+	Tools = { 
+		MyBackground = Background { 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+		MyBlur = Blur { 
+			ViewInfo = OperatorInfo { Pos = { 110, 0 }, }, 
+		}, 
+		MyXF = Transform { 
+			ViewInfo = OperatorInfo { Pos = { 220, 0 }, }, 
+		}, 
+	}, 
+	ActiveTool = "MyXF", 
+}

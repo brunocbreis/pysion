@@ -1,0 +1,29 @@
+{ 
+	Tools = { 
+		MyBackground = Background { 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+		MyBlur = Blur { 
+			ViewInfo = OperatorInfo { Pos = { 110, 0 }, }, 
+		}, 
+		MyXF = Transform { 
+			ViewInfo = OperatorInfo { Pos = { 220, 0 }, }, 
+		}, 
+		Text1 = TextPlus { 
+			Inputs = { 
+				UseFrameFormatSettings = Input { Value = 1, }, 
+				Width = Input { }, 
+				Height = Input { }, 
+				Font = Input { Value = "Arial", }, 
+				Style = Input { Value = "Italic", }, 
+				StyledText = Input { Value = "Testing Text", }, 
+				Red1 = Input { Value = 0.3, }, 
+				Green1 = Input { Value = 0.7, }, 
+				Blue1 = Input { Value = 1, }, 
+				Alpha1 = Input { Value = 1, }, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 0, -33 }, }, 
+		}, 
+	}, 
+	ActiveTool = "Text1", 
+}

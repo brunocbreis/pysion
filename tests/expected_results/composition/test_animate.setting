@@ -1,0 +1,39 @@
+{ 
+	Tools = { 
+		MyBackground = Background { 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+		MyBlur = Blur { 
+			Inputs = { 
+				Blur = Input { 
+					SourceOp = "MyBlurBlur", 
+					Source = "Value", 
+				}, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 110, 0 }, }, 
+		}, 
+		MyXF = Transform { 
+			Inputs = { 
+				Size = Input { 
+					SourceOp = "MyXFSize", 
+					Source = "Value", 
+				}, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 220, 0 }, }, 
+		}, 
+		MyBlurBlur = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0, RH = { 4.0, 0 }, }, 
+				[12] = { 15, }, 
+				[24] = { 20, LH = { 20.0, 20 }, }, 
+			}, 
+		}, 
+		MyXFSize = BezierSpline { 
+			KeyFrames = { 
+				[0] = { 0, }, 
+				[12] = { 2, LH = { 8.0, 2 }, }, 
+			}, 
+		}, 
+	}, 
+	ActiveTool = "MyXF", 
+}
