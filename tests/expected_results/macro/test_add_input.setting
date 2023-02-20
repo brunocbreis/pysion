@@ -1,0 +1,61 @@
+{ 
+	Tools = { 
+		TestMacro = MacroOperator { 
+			Inputs = { 
+				SizeInstance = InstanceInput { 
+					Name = "Size", 
+					SourceOp = "TestTXT", 
+					Source = "Size", 
+				}, 
+			}, 
+			Outputs = { 
+				Output1 = InstanceOutput { 
+					SourceOp = "TestMerge", 
+					Source = "Output", 
+				}, 
+			}, 
+			Tools = { 
+				TestBG = Background { 
+					Inputs = { 
+						TopLeftRed = Input { Value = 1, }, 
+						TopLeftGreen = Input { Value = 1, }, 
+						TopLeftBlue = Input { Value = 0.2, }, 
+						TopLeftAlpha = Input { Value = 1, }, 
+						UseFrameFormatSettings = Input { Value = 1, }, 
+					}, 
+					ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+				}, 
+				TestTXT = TextPlus { 
+					Inputs = { 
+						UseFrameFormatSettings = Input { Value = 1, }, 
+						Width = Input { }, 
+						Height = Input { }, 
+						Font = Input { Value = "Open Sans", }, 
+						Style = Input { Value = "Bold", }, 
+						StyledText = Input { Value = "Hello world!", }, 
+						Red1 = Input { Value = 0, }, 
+						Green1 = Input { Value = 0, }, 
+						Blue1 = Input { Value = 0, }, 
+						Alpha1 = Input { Value = 1, }, 
+					}, 
+					ViewInfo = OperatorInfo { Pos = { 110, -33 }, }, 
+				}, 
+				TestMerge = Merge { 
+					Inputs = { 
+						Background = Input { 
+							SourceOp = "TestBG", 
+							Source = "Output", 
+						}, 
+						Foreground = Input { 
+							SourceOp = "TestTXT", 
+							Source = "Output", 
+						}, 
+					}, 
+					ViewInfo = OperatorInfo { Pos = { 110, 0 }, }, 
+				}, 
+			}, 
+			ViewInfo = GroupInfo { Pos = { 0, 0 }, }, 
+		}, 
+	}, 
+	ActiveTool = "TestMacro", 
+}

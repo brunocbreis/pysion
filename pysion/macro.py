@@ -115,7 +115,8 @@ class Macro:
             pretty_name = input_name
 
         new_instance = InstanceInput(
-            name=pretty_name,
+            pretty_name=pretty_name,
+            fusion_name=f"{input_name}Instance",
             source_operator=tool.name,
             source=input_name,
             default=default_value,
@@ -160,17 +161,14 @@ class Macro:
         ).add_input(
             tool=tool,
             input_name=f"{prefix}Green{suffix}",
-            pretty_name=name,
             control_group=group,
         ).add_input(
             tool=tool,
             input_name=f"{prefix}Blue{suffix}",
-            pretty_name=name,
             control_group=group,
         ).add_input(
             tool=tool,
             input_name=f"{prefix}Alpha{suffix}",
-            pretty_name=name,
             control_group=group,
         )
 
@@ -197,18 +195,19 @@ class Macro:
 class InstanceInput:
     """Represents a Fusion InstanceInput. Outputs a NamedTable."""
 
-    name: str
+    pretty_name: str
     source_operator: str
     source: str
     default: int | float | str | list[float] | NamedTable | None = None
     page: str | None = None
     control_group: int | None = None
+    fusion_name: str | None = None
 
     @property
     def nt(self) -> NamedTable:
         return NamedTable(
             "InstanceInput",
-            Name=self.name,
+            Name=self.pretty_name,
             SourceOp=self.source_operator,
             Source=self.source,
             Default=self.default,
@@ -220,7 +219,9 @@ class InstanceInput:
     @property
     def proper_name(self) -> str:
         """Returns a proper name for the input, without spaces."""
-        return self.name.replace(" ", "")
+        if self.fusion_name:
+            return self.fusion_name
+        return self.pretty_name.replace(" ", "")
 
     def __repr__(self) -> str:
         return repr(self.nt)
