@@ -64,10 +64,3 @@ You can install **pysion** by running `pip install git+https://github.com/brunoc
 **pysion** is still very much a work-in-progress, so expect lots of changes and adjustments in its syntax in these beginning stages.
 
 As of right now, I have also been developing [FuPlot](https://github.com/brunocbreis/FuPlot), which relies on **pysion** to generate data visualizations as completely-editable (and animatable) Fusion node trees. I would love to see what else people can come up with!
-
-## To-do
-
-- add user control pages
-- create list of possible FuIDs
-- create list of control page icons
-- automatically position tools in flow
