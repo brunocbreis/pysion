@@ -2,6 +2,13 @@ from __future__ import annotations
 from collections import UserDict, UserList
 from typing import Any
 from enum import Enum
+from .values import (
+    quoted_string,
+    list_as_table,
+    tuple_as_table,
+    lowercase_bool,
+    keyframe,
+)
 
 
 class NamedTable(UserDict):
@@ -169,34 +176,3 @@ class IndentedList(UserList):
         s += f"{ind0}]"
 
         return s
-
-
-class FuID(UserList):
-    def __init__(self, name: str) -> None:
-        return super().__init__([name])
-
-    def __repr__(self) -> str:
-        return "FuID " + super().__repr__().replace("[", "{ ").replace(
-            "]", " }"
-        ).replace("'", '"')
-
-
-# Display funcs
-def quoted_string(string: str) -> str:
-    return f'"{string}"'
-
-
-def list_as_table(ls: list) -> str:
-    return repr(ls).replace("[", "{ ").replace("]", " }")
-
-
-def tuple_as_table(tp: tuple) -> str:
-    return repr(tp).replace("(", "{ ").replace(")", " }")
-
-
-def lowercase_bool(b: bool) -> str:
-    return repr(b).lower()
-
-
-def keyframe(n: int | float) -> str:
-    return f"[{n}]"

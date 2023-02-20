@@ -8,7 +8,7 @@ from .modifiers import Modifier, XYPathModifier
 from .macro import Macro
 from .input import Input
 from .animation import BezierSpline, Curve
-from .named_table import FuID
+from .values import FuID
 from .color import RGBA
 
 try:
@@ -22,10 +22,10 @@ except ImportError:
 class Operator(Protocol):
     @property
     def name(self) -> str:
-        ...
+        pass
 
     def render(self) -> NamedTable | UnnamedTable:
-        ...
+        pass
 
 
 class Composition:

@@ -2,25 +2,26 @@ from __future__ import annotations
 from dataclasses import dataclass
 from .named_table import UnnamedTable
 from enum import Enum
+from typing import Literal
 
 
-class UC_data_type(Enum):
-    number = "Number"
-    point = "Point"
-    text = "Text"
+class UC_dtype(Enum):
+    NUMBER = "Number"
+    POINT = "Point"
+    TEXT = "Text"
 
 
 class UC_input_control(Enum):
-    slider = "SliderControl"
-    combo = "ComboControl"
-    screw = "ScrewControl"
+    SLIDER = "SliderControl"
+    COMBO = "ComboControl"
+    SCREW = "ScrewControl"
 
 
 @dataclass
 class UserControl:
     pretty_name: str
-    input_control: str = UC_input_control.slider
-    data_type: str = UC_data_type.number
+    input_control: str | Literal = UC_input_control.SLIDER
+    data_type: str | Literal = UC_dtype.NUMBER
     is_integer: bool | None = False
     page: str | None = None
     default: int | float | str | None = None

@@ -11,3 +11,4 @@ images/*.psd
 docs/
 exports/
 .coverage
+htmlcov/
