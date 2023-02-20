@@ -6,13 +6,27 @@ from typing import Literal
 from .flow import fusion_coords
 from .color import RGBA
 from .named_table import NamedTable, UnnamedTable
+from enum import Enum
 
 
 @dataclass
 class Tool:
-    """Represents a Fusion Tool. Outputs a NamedTable, with the tool ID being the name."""
+    """Represents a Fusion Tool. Outputs a NamedTable, with the tool ID being the name.
 
-    id: str
+    Arguments
+    ----------
+    - id : str | ToolID
+        An existing Fusion tool id. Examples: "Background", "TextPlus", "Blur"
+        Import the ToolID enum for quick input of acceptable tool IDs
+    - name : str
+        A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+    - position : tuple[int,int]
+        X, Y Coordinates for positioning the tool in the Flow.
+    - inputs : UnnamedTable[str, Input] | None (deprecated)
+        Optionally initialize a tool with a table of inputs. Prefer add_input() method.
+    """
+
+    id: str | ToolID
     name: str
     position: tuple[int, int] | None = (0, 0)
     inputs: UnnamedTable[str, Input] | None = None
@@ -293,3 +307,36 @@ class Tool:
         ).add_color_input(color, suffix="1")
 
         return text_plus
+
+
+class ToolID(Enum):
+    # Media
+    MEDIA_IN = "MediaIn"
+    MEDIA_OUT = "MediaOut"
+    LOADER = "Loader"
+    SAVER = "Saver"
+
+    # Generators
+    BACKGROUND = "Background"
+    TEXT = "TextPlus"
+    FAST_NOISE = "FastNoise"
+    PAINT = "Paint"
+
+    # Effects
+    COLOR_CORRECTOR = "ColorCorrector"
+    CC = "ColorCorrector"
+    COLOR_CURVES = "ColorCurves"
+    CURVES = "ColorCurves"
+    BRIGHTNESS_CONTRAST = "BrightnessContrast"
+    BC = "BrightnessContrast"
+    BLUR = "Blur"
+
+    # Transform and composite
+    TRANSFORM = "Transform"
+    XF = "Transform"
+    MERGE = "Merge"
+    MRG = "Merge"
+    DISSOLVE = "Dissolve"
+    DX = "Dissolve"
+    CHANNEL_BOOLEANS = "ChannelBooleans"
+    MATTE_CONTROL = "MatteControl"
