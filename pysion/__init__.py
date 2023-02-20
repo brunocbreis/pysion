@@ -1,5 +1,5 @@
 from .composition import Composition
-from .tool import Tool
+from .tool import Tool, ToolID
 from .macro import Macro
 from .input import Input, Polyline
 from .flow import fusion_coords
