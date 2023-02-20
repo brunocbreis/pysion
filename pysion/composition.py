@@ -161,8 +161,9 @@ class Composition:
 
         Arguments
         ----------
-        - id : str
+        - id : str | ToolID
             An existing Fusion tool id. Examples: "Background", "TextPlus", "Blur"
+            Import the ToolID enum for quick input of acceptable tool IDs
         - name : str
             A Fusion compatible name. Should not contain spaces or dashes or start with a number.
         - position : tuple[int,int]
