@@ -21,7 +21,7 @@ bg.add_mask(mask)
 
 comp.add_tools(bg, mask)
 
-print(comp.render())
+print(comp)
 ```
 
 The output...
