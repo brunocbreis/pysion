@@ -340,3 +340,14 @@ class ToolID(Enum):
     DX = "Dissolve"
     CHANNEL_BOOLEANS = "ChannelBooleans"
     MATTE_CONTROL = "MatteControl"
+
+    # Shape nodes
+    S_RECTANGLE = "sRectangle"
+    S_ELLIPSE = "sEllipse"
+    S_NGON = "sNGon"
+    S_RENDER = "sRender"
+    S_MERGE = "sMerge"
+    S_TRANSFORM = "sTransform"
+    S_DUPLICATE = "sDuplicate"
+    S_BOOLEAN = "sBoolean"
+    S_OUTLINE = "sOutline"
