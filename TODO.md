@@ -5,9 +5,9 @@
 - [ ] automatically position tools in flow
 - [ ] add user control pages
 - [ ] add more enums for easy input setting
-  - [ ] all possible FuIDs
+  - [X] some FuIDs
   - [ ] user control icons
-  - [ ] tool ids
+  - [X] tool ids
 - [ ] pysion.shorcuts
   - [ ] basic_comp() for jumpstarting projects
   - [ ] default_comp() that uses configurable settings?
