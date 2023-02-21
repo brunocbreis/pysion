@@ -114,6 +114,22 @@ class Composition:
 
         self.add_tools(value)
 
+    def __contains__(self, value: Tool | Macro | Modifier | BezierSpline) -> bool:
+        if not (self.tools or self.modifiers):
+            return False
+
+        match value:
+            case Modifier() | BezierSpline():
+                if not self.modifiers:
+                    return False
+                return value in self.modifiers.values()
+            case Tool() | Macro():
+                if not self.tools:
+                    return False
+                return value in self.tools.values()
+            case _:
+                raise ValueError
+
     # Private methods
     def _auto_set_active_tool(self) -> None:
         if not self.tools:
@@ -278,16 +294,15 @@ class Composition:
             )
 
         # Add tools to comp if not already
-        if background not in self.tools.values():
+        if background not in self:
             if background is not None:
                 self.add_tools(background)
 
-        if foreground not in self.tools.values():
+        if foreground not in self:
             if foreground is not None:
                 self.add_tools(foreground)
 
         merge.add_inputs(bg_input, fg_input)
-
         self.add_tools(merge)
 
         return merge
@@ -363,7 +378,7 @@ class Composition:
         """
         match tool:
             case Tool():
-                if tool not in self.tools.values():
+                if tool not in self:
                     print(f"Adding {tool.name} to the comp.\n")
                     self.add_tools(tool)
 
@@ -420,7 +435,7 @@ class Composition:
         """
         match tool:
             case Tool():
-                if tool not in self.tools.values():
+                if tool not in self:
                     print(f"Adding {tool.name} to the comp.\n")
                     self.add_tools(tool)
 

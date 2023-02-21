@@ -14,6 +14,7 @@
   - [ ] basic_comp() for jumpstarting projects
   - [ ] default_comp() that uses configurable settings?
   - [ ] quick titles or something
+- [X] implement \__contains__ method to avoid bugs when self.tools haven't been initialized
 
 ## Docs
 

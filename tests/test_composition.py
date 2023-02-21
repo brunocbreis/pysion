@@ -104,3 +104,36 @@ def test_merge_macro(comp: Composition):
     comp.add_merge("MergeMacro", macro, comp["MyBackground"])
 
     assert comp["MergeMacro"]["Background"].source_operator == macro.name
+
+
+def test_merge_tools_not_in_comp_yet():
+    comp = Composition()
+    bg1 = Tool(ToolID.background, "BG1")
+    bg2 = Tool(ToolID.background, "BG2")
+
+    merge = comp.add_merge("MergeBGs", bg1, bg2)
+
+    assert bg1 in comp.tools.values()
+    assert bg2 in comp.tools.values()
+    assert merge in comp.tools.values()
+
+
+def test_composition_contains_tool(comp: Composition):
+    assert comp["MyBackground"] in comp
+
+
+def test_composition_contains_modifier(comp: Composition):
+    pub = comp.publish(comp["MyBackground"], "TopLeftRed", 1)
+
+    assert pub in comp
+
+
+def test_composition_does_not_contain(comp):
+    new_tool = Tool(ToolID.channel_booleans, "random")
+
+    assert not new_tool in comp
+
+
+def test_composition_contains_error(comp):
+    with pytest.raises(ValueError):
+        "Pizza" in comp

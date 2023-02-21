@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- new comp \__contains__ method allows for quick checking if tool in comp even when self.tools is None
+
+### Fixed
+
+- add_merge doesn't break when comp is empty
+
 ## v0.1.1 – 2023-02-21
 
 Some bug fixes and minor changes and improvements.
