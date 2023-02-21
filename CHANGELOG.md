@@ -6,6 +6,10 @@
 
 - auto name tool
 
+### Fixed
+
+- ToolID Enums now convert to str at the appropriate time to avoid breaks
+
 ## v0.1.0 – 2023-02-20
 
 Ok, it's time to commit to a first release and try some semantic versioning from now on. Isn't this fun?
