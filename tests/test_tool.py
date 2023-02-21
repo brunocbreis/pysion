@@ -1,4 +1,5 @@
-from pysion import Tool, ToolID, Composition
+from pysion import Tool, Composition
+from pysion.values import ToolID
 from pathlib import Path
 
 # Set up path for saving and retrieving expected results
@@ -15,7 +16,7 @@ def compare_result(name: str, result: Composition) -> str:
 
 
 def test_add_mask():
-    blur = Tool(ToolID.BLUR, "Blur")
+    blur = Tool(ToolID.blur, "Blur")
     mask = Tool.mask("Mask", "BSpline", (-1, 0))
     blur.add_mask(mask)
 

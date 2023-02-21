@@ -1,4 +1,5 @@
-from pysion import Composition, RGBA, ToolID, Tool, Macro
+from pysion import Composition, RGBA, Tool, Macro
+from pysion.values import ToolID
 from pysion.animation import Curve
 from pathlib import Path
 import pytest
@@ -83,7 +84,7 @@ def test_animate_position(comp: Composition):
 
 def test_auto_name_tool():
     comp = Composition()
-    bg1 = comp.add_tool(ToolID.BACKGROUND)
+    bg1 = comp.add_tool(ToolID.background)
     bg2 = comp.add_tool("Background")
 
     assert bg1.name == "Background1"
@@ -97,7 +98,7 @@ def test_publish(comp: Composition):
 
 
 def test_merge_macro(comp: Composition):
-    new_tools = (Tool(ToolID.BACKGROUND, "NewBG"), Tool(ToolID.BLUR, "NewBlur"))
+    new_tools = (Tool(ToolID.background, "NewBG"), Tool(ToolID.blur, "NewBlur"))
     macro = Macro("MyMacro").add_tools(*new_tools)
 
     comp.add_merge("MergeMacro", macro, comp["MyBackground"])

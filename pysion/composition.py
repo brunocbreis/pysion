@@ -3,7 +3,7 @@ from pathlib import Path
 
 from typing import Protocol, Literal
 from .named_table import NamedTable, UnnamedTable
-from .tool import Tool, ToolID
+from .tool import Tool
 from .modifiers import Modifier, XYPathModifier
 from .macro import Macro
 from .input import Input
@@ -146,9 +146,7 @@ class Composition:
 
         return tool
 
-    def _auto_name_tool(self, tool_id: str | ToolID) -> str:
-        if isinstance(tool_id, ToolID):
-            tool_id = tool_id.value
+    def _auto_name_tool(self, tool_id: str) -> str:
 
         i = 1
         name = f"{tool_id}{i}"
@@ -175,7 +173,7 @@ class Composition:
     # Tools
     def add_tool(
         self,
-        id: str | ToolID,
+        id: str,
         name: str | None = None,
         position: tuple[int, int] = (0, 0),
     ) -> Tool:
@@ -183,9 +181,9 @@ class Composition:
 
         Arguments
         ----------
-        - id : str | ToolID
+        - id : str
             An existing Fusion tool id. Examples: "Background", "TextPlus", "Blur"
-            Import the ToolID enum for quick input of acceptable tool IDs
+            Import the ToolID SimpleNamespace for quick input of acceptable tool IDs
         - name : str
             A Fusion compatible name. Should not contain spaces or dashes or start with a number.
             If not provided, an automatic sequential name will be given.

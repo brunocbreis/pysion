@@ -1,12 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from .input import Input, Polyline
-from .user_controls import UserControl
+from .user_control import UserControl
 from typing import Literal
 from .flow import fusion_coords
 from .color import RGBA
 from .named_table import NamedTable, UnnamedTable
-from enum import Enum
 
 
 @dataclass
@@ -15,9 +14,9 @@ class Tool:
 
     Arguments
     ----------
-    - id : str | ToolID
+    - id : str
         An existing Fusion tool id. Examples: "Background", "TextPlus", "Blur"
-        Import the ToolID enum for quick input of acceptable tool IDs
+        Import the ToolID SimpleNamespace for quick input of acceptable tool IDs
     - name : str
         A Fusion compatible name. Should not contain spaces or dashes or start with a number.
     - position : tuple[int,int]
@@ -26,16 +25,12 @@ class Tool:
         Optionally initialize a tool with a table of inputs. Prefer add_input() method.
     """
 
-    id: str | ToolID
+    id: str
     name: str
     position: tuple[int, int] | None = (0, 0)
     inputs: UnnamedTable[str, Input] | None = None
     output: str = "Output"
     user_controls: UnnamedTable[str, UserControl] | None = None
-
-    def __post_init__(self):
-        if isinstance(self.id, ToolID):
-            self.id = self.id.value
 
     # Renderers
     def render(self) -> NamedTable:
@@ -310,47 +305,3 @@ class Tool:
         ).add_color_input(color, suffix="1")
 
         return text_plus
-
-
-class ToolID(Enum):
-    # Media
-    MEDIA_IN = "MediaIn"
-    MEDIA_OUT = "MediaOut"
-    LOADER = "Loader"
-    SAVER = "Saver"
-
-    # Generators
-    BACKGROUND = "Background"
-    TEXT = "TextPlus"
-    FAST_NOISE = "FastNoise"
-    PAINT = "Paint"
-
-    # Effects
-    COLOR_CORRECTOR = "ColorCorrector"
-    CC = "ColorCorrector"
-    COLOR_CURVES = "ColorCurves"
-    CURVES = "ColorCurves"
-    BRIGHTNESS_CONTRAST = "BrightnessContrast"
-    BC = "BrightnessContrast"
-    BLUR = "Blur"
-
-    # Transform and composite
-    TRANSFORM = "Transform"
-    XF = "Transform"
-    MERGE = "Merge"
-    MRG = "Merge"
-    DISSOLVE = "Dissolve"
-    DX = "Dissolve"
-    CHANNEL_BOOLEANS = "ChannelBooleans"
-    MATTE_CONTROL = "MatteControl"
-
-    # Shape nodes
-    S_RECTANGLE = "sRectangle"
-    S_ELLIPSE = "sEllipse"
-    S_NGON = "sNGon"
-    S_RENDER = "sRender"
-    S_MERGE = "sMerge"
-    S_TRANSFORM = "sTransform"
-    S_DUPLICATE = "sDuplicate"
-    S_BOOLEAN = "sBoolean"
-    S_OUTLINE = "sOutline"
