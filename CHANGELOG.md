@@ -5,10 +5,15 @@
 ### Added
 
 - auto name tool
+- new values subpackage for special value input (FuIDs, ToolIDs, InputControl names etc)
 
 ### Fixed
 
-- ToolID Enums now convert to str at the appropriate time to avoid breaks
+- ~~ToolID Enums now convert to str at the appropriate time to avoid breaks~~
+
+### Changed
+
+- Actually, ToolID and other Enums are now SimpleNamespaces
 
 ## v0.1.0 – 2023-02-20
 
