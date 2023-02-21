@@ -1,0 +1,17 @@
+{ 
+	Tools = { 
+		Blur = Blur { 
+			Inputs = { 
+				EffectMask = Input { 
+					SourceOp = "Mask", 
+					Source = "Mask", 
+				}, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+		Mask = BSplineMask { 
+			ViewInfo = OperatorInfo { Pos = { -110, 0 }, }, 
+		}, 
+	}, 
+	ActiveTool = "Mask", 
+}

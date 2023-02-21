@@ -1,0 +1,22 @@
+{ 
+	Tools = { 
+		PolylineMask1 = PolylineMask { 
+			Inputs = { 
+				Polyline = Input { 
+					Value = Polyline { 
+						Points = { 
+							{ PublishID = "Point0", },
+							{ PublishID = "Point1", },
+							{ PublishID = "Point2", },
+						 }, 
+					}, 
+				}, 
+				Point0 = Input { Value = { 0, 0 }, }, 
+				Point1 = Input { Value = { 0.5, 0.5 }, }, 
+				Point2 = Input { Value = { 0.3, 0.75 }, }, 
+			}, 
+			ViewInfo = OperatorInfo { Pos = { 0, 0 }, }, 
+		}, 
+	}, 
+	ActiveTool = "PolylineMask1", 
+}
