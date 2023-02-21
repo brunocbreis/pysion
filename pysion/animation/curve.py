@@ -51,4 +51,4 @@ class Curve:
     @classmethod
     def smooth(cls) -> Curve:
         # TODO: the Y is affected by the X... how to implement?
-        return Curve()
+        raise NotImplementedError
