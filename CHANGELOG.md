@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.1.1 – 2023-02-21
+
+Some bug fixes and minor changes and improvements.
+
 ### Added
 
 - auto name tool
