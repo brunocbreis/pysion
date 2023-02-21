@@ -33,6 +33,10 @@ class Tool:
     output: str = "Output"
     user_controls: UnnamedTable[str, UserControl] | None = None
 
+    def __post_init__(self):
+        if isinstance(self.id, ToolID):
+            self.id = self.id.value
+
     # Renderers
     def render(self) -> NamedTable:
         inputs, user_controls = None, None
@@ -143,7 +147,7 @@ class Tool:
         poly = Polyline(points).inputs
 
         for input in poly:
-            self.inputs[input.name] = input
+            self.add_input(input)
 
         return self
 
@@ -167,9 +171,8 @@ class Tool:
         return self
 
     def add_mask(self, mask: Tool) -> Tool:
-        self.inputs["EffectMask"] = Input(
-            "EffectMask", source_operator=mask.name, source=mask.output
-        )
+        mask_input = Input.mask(mask.name, mask.output)
+        self.add_input(mask_input)
 
         return self
 
