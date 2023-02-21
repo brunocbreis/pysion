@@ -18,7 +18,7 @@
 ## Docs
 
 - [ ] add feature highlights and short examples
-- [ ] add changelog
+- [X] add changelog
 - [ ] docstring everything
 
 ## Examples
