@@ -1,7 +1,8 @@
-from pysion import Composition, RGBA, ToolID
+from pysion import Composition, RGBA, ToolID, Tool, Macro
 from pysion.animation import Curve
 from pathlib import Path
 import pytest
+
 
 # Set up path for saving and retrieving expected results
 FOLDER = Path("tests") / "expected_results" / "composition"
@@ -16,7 +17,7 @@ def expected_result(name: str) -> str:
 
 # Base comp fixture for testing
 @pytest.fixture
-def base_test_comp() -> Composition:
+def comp() -> Composition:
     comp = Composition()
     comp.add_tool("Background", "MyBackground")
     comp.add_tool("Blur", "MyBlur", (1, 0))
@@ -26,22 +27,18 @@ def base_test_comp() -> Composition:
 
 
 # Actual tests
-def test_base_test_comp(base_test_comp: Composition):
-    assert repr(base_test_comp) == expected_result("base_test_comp")
+def test_base_test_comp(comp: Composition):
+    assert repr(comp) == expected_result("base_test_comp")
 
 
-def test_add_merge(base_test_comp: Composition):
-    comp = base_test_comp
-
+def test_add_merge(comp: Composition):
     comp.add_merge("Merge1", comp["MyBackground"], comp["MyBlur"], (1, 1))
 
     print(comp)
     assert repr(comp) == expected_result("test_add_merge")
 
 
-def test_add_text(base_test_comp: Composition):
-    comp = base_test_comp
-
+def test_add_text(comp: Composition):
     comp.add_text(
         "Text1",
         "Testing Text",
@@ -54,9 +51,7 @@ def test_add_text(base_test_comp: Composition):
     assert repr(comp) == expected_result("test_add_text")
 
 
-def test_animate(base_test_comp: Composition):
-    comp = base_test_comp
-
+def test_animate(comp: Composition):
     blur_spline = comp.animate("MyBlur", "Blur", default_curve=Curve.linear())
     blur_spline.add_keyframes([(0, 0), (24, 20)], curve=Curve.ease_in_and_out())
     blur_spline[12] = 15
@@ -68,9 +63,7 @@ def test_animate(base_test_comp: Composition):
     assert repr(comp) == expected_result("test_animate")
 
 
-def test_animate_position(base_test_comp: Composition):
-    comp = base_test_comp
-
+def test_animate_position(comp: Composition):
     pos = comp.animate_position("MyXF", default_curve_x=Curve.decelerate_in_and_out())
 
     pos[0] = (0.5, 0.5)
@@ -95,3 +88,18 @@ def test_auto_name_tool():
 
     assert bg1.name == "Background1"
     assert bg2.name == "Background2"
+
+
+def test_publish(comp: Composition):
+    comp.publish(comp["MyBackground"], "TopLeftRed", 1)
+
+    comp.copy()
+
+
+def test_merge_macro(comp: Composition):
+    new_tools = (Tool(ToolID.BACKGROUND, "NewBG"), Tool(ToolID.BLUR, "NewBlur"))
+    macro = Macro("MyMacro").add_tools(*new_tools)
+
+    comp.add_merge("MergeMacro", macro, comp["MyBackground"])
+
+    assert comp["MergeMacro"]["Background"].source_operator == macro.name
