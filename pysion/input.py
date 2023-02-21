@@ -26,8 +26,8 @@ class Input:
             Source=self.source,
         )
 
-    def __repr__(self) -> str:
-        return repr(self.nt)
+    # def __repr__(self) -> str:
+    #     return repr(self.nt)
 
     def __setitem__(self, key: int | float, value: int | float) -> None:
         assert (
@@ -78,5 +78,6 @@ class Polyline:
         self._render()
         return self._inputs
 
-    def __repr__(self) -> str:
-        return "".join(repr(i) for i in self.inputs)
+    # def __repr__(self) -> str:
+    #     return "".join(repr(i) for i in self.inputs)
+    # commenting lines above bc useless.
