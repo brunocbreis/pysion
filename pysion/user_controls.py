@@ -33,6 +33,12 @@ class UserControl:
     def __post_init__(self):
         self.name = self.pretty_name.replace(" ", "")
 
+        if isinstance(self.data_type, UC_dtype):
+            self.input_control = self.data_type.value
+
+        if isinstance(self.input_control, UC_input_control):
+            self.input_control = self.input_control.value
+
     def __repr__(self) -> str:
         return repr(self.render())
 
