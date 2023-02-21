@@ -1,4 +1,4 @@
-from pysion import Composition, RGBA
+from pysion import Composition, RGBA, ToolID
 from pysion.animation import Curve
 from pathlib import Path
 import pytest
@@ -86,3 +86,12 @@ def test_animate_position(base_test_comp: Composition):
     )
 
     assert repr(comp) == expected_result("test_animate_position")
+
+
+def test_auto_name_tool():
+    comp = Composition()
+    bg1 = comp.add_tool(ToolID.BACKGROUND)
+    bg2 = comp.add_tool("Background")
+
+    assert bg1.name == "Background1"
+    assert bg2.name == "Background2"

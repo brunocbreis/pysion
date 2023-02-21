@@ -62,11 +62,6 @@ class Tool:
     def __repr__(self) -> str:
         return repr(self.render())
 
-    def _render_position(self) -> NamedTable | None:
-        if self.position is None:
-            return None
-        return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
-
     def __getitem__(self, key: str) -> Input:
         return self.inputs[key]
 
@@ -87,6 +82,11 @@ class Tool:
             )
 
         self.inputs[key] = Input(key, value)
+
+    def _render_position(self) -> NamedTable | None:
+        if self.position is None:
+            return None
+        return NamedTable("OperatorInfo", Pos=fusion_coords(self.position))
 
     @property
     def position_nt(self) -> NamedTable | None:

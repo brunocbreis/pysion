@@ -3,7 +3,7 @@ from pathlib import Path
 
 from typing import Protocol, Literal
 from .named_table import NamedTable, UnnamedTable
-from .tool import Tool
+from .tool import Tool, ToolID
 from .modifiers import Modifier, XYPathModifier
 from .macro import Macro
 from .input import Input
@@ -146,6 +146,23 @@ class Composition:
 
         return tool
 
+    def _auto_name_tool(self, tool_id: str | ToolID) -> str:
+        if isinstance(tool_id, ToolID):
+            tool_id = tool_id.value
+
+        i = 1
+        name = f"{tool_id}{i}"
+
+        if not self.tools:
+            return name
+
+        names = self.tools.keys()
+        while name in names:
+            i += 1
+            name = f"{tool_id}{i}"
+
+        return name
+
     def _add_modifier(self, modifier: Operator) -> Operator:
         if self.modifiers is None:
             self.modifiers: UnnamedTable[str, Operator] = UnnamedTable()
@@ -156,7 +173,12 @@ class Composition:
 
     # Public methods
     # Tools
-    def add_tool(self, id: str, name: str, position: tuple[int, int] = (0, 0)) -> Tool:
+    def add_tool(
+        self,
+        id: str | ToolID,
+        name: str | None = None,
+        position: tuple[int, int] = (0, 0),
+    ) -> Tool:
         """Creates a new Tool and adds it to the comp.
 
         Arguments
@@ -166,6 +188,7 @@ class Composition:
             Import the ToolID enum for quick input of acceptable tool IDs
         - name : str
             A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+            If not provided, an automatic sequential name will be given.
         - position : tuple[int,int]
             X, Y Coordinates for positioning the tool in the Flow.
 
@@ -174,6 +197,9 @@ class Composition:
         The newly created Tool.
 
         """
+        if not name:
+            name = self._auto_name_tool(id)
+
         new_tool = Tool(id, name, position)
 
         return self._add_tool(new_tool)

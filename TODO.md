@@ -3,7 +3,7 @@
 ## Features and improvements
 
 - [ ] automatically position tools in flow
-- [ ] automatic tool naming
+- [X] automatic tool naming
   - [ ] and also checking for invalid names
 - [ ] add user control pages
 - [ ] add more enums for easy input setting
