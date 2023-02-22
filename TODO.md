@@ -16,6 +16,10 @@
   - [ ] quick titles or something
 - [X] implement \__contains__ method to avoid bugs when self.tools haven't been initialized
 
+## Issues
+
+- [ ] Adding Macro inside Macro seems to break stuff
+
 ## Docs
 
 - [ ] add feature highlights and short examples
