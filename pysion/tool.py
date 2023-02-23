@@ -95,6 +95,9 @@ class Tool:
         return NamedTable("InstanceOutput", SourceOp=self.name, Source=self.output)
 
     def _add_input(self, input: Input) -> None:
+        if input is None:
+            return
+
         if self.inputs is None:
             self.inputs = UnnamedTable(force_indent=True)
 

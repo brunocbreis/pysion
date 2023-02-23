@@ -119,6 +119,8 @@ class Composition:
             return False
 
         match value:
+            case None:
+                return False
             case Modifier() | BezierSpline():
                 if not self.modifiers:
                     return False
@@ -277,10 +279,12 @@ class Composition:
                 bg_output = background.outputs[0].name
             case _:
                 bg_output = None
-        if bg_output:
-            bg_input = Input(
-                "Background", source_operator=background.name, source=bg_output
-            )
+
+        bg_input = (
+            Input("Background", source_operator=background.name, source=bg_output)
+            if bg_output
+            else None
+        )
 
         match foreground:
             case Tool():
@@ -289,10 +293,12 @@ class Composition:
                 fg_output = foreground.outputs[0].name
             case _:
                 fg_output = None
-        if fg_output:
-            fg_input = Input(
-                "Foreground", source_operator=foreground.name, source=fg_output
-            )
+
+        fg_input = (
+            Input("Foreground", source_operator=foreground.name, source=fg_output)
+            if fg_output
+            else None
+        )
 
         # Add tools to comp if not already
         if background not in self:
@@ -303,7 +309,9 @@ class Composition:
             if foreground is not None:
                 self.add_tools(foreground)
 
-        merge.add_inputs(bg_input, fg_input)
+        if any([bg_input, fg_input]):
+            merge.add_inputs(bg_input, fg_input)
+
         self.add_tools(merge)
 
         return merge

@@ -143,3 +143,9 @@ def test_comp_add_text_with_no_name(comp: Composition):
     text = comp.add_text(text="My text!")
 
     assert text in comp
+
+
+def test_add_empty_merge(comp: Composition):
+    empty_merge = comp.add_merge()
+
+    assert empty_merge in comp
