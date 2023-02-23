@@ -137,3 +137,9 @@ def test_composition_does_not_contain(comp):
 def test_composition_contains_error(comp):
     with pytest.raises(ValueError):
         "Pizza" in comp
+
+
+def test_comp_add_text_with_no_name(comp: Composition):
+    text = comp.add_text(text="My text!")
+
+    assert text in comp

@@ -242,9 +242,9 @@ class Composition:
     # Specific tools
     def add_merge(
         self,
-        name: str,
-        background: Tool | Macro | None,
-        foreground: Tool | Macro | None,
+        name: str | None = None,
+        background: Tool | Macro | None = None,
+        foreground: Tool | Macro | None = None,
         position: tuple[float, float] = (0, 0),
     ) -> Tool:
         """Creates a new Merge Tool and adds it to the comp. Can also automatically connect other tools to the merge's
@@ -254,6 +254,7 @@ class Composition:
         ----------
         - name : str
             A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+            If not provided, an automatic sequential name will be given.
         - background : Tool, Macro or None
             The tool's output will be added to the merge's Background input.
         - foreground : Tool, Macro or None
@@ -309,8 +310,8 @@ class Composition:
 
     def add_text(
         self,
-        name: str,
-        text: str,
+        name: str = None,
+        text: str = None,
         font_face: str = "Open Sans",
         font_style: str = "Bold",
         color: RGBA = RGBA(1, 1, 1),
@@ -323,6 +324,7 @@ class Composition:
         ----------
         - name : str
             A Fusion compatible name. Should not contain spaces or dashes or start with a number.
+            If not provided, an automatic sequential name will be given.
         - text : str
             Text that will be added as the Value to StyledText input.
         - font_face : str
