@@ -5,6 +5,7 @@
 ### Added
 
 - new comp \__contains__ method allows for quick checking if tool in comp even when self.tools is None
+- offset_position() method for moving tools around the flow
 
 ### Fixed
 
