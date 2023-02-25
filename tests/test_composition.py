@@ -149,3 +149,18 @@ def test_add_empty_merge(comp: Composition):
     empty_merge = comp.add_merge()
 
     assert empty_merge in comp
+
+
+def test_to_macro(comp: Composition):
+    blur = comp["MyBlur"]
+    macro = comp.to_macro("NewMacro")
+
+    assert blur in comp
+    assert isinstance(macro, Macro)
+
+
+def test_to_macro_add_to_comp(comp: Composition):
+    group = comp.to_macro("MyGroup", "group", True)
+
+    assert group in comp
+    assert len(comp.tools) == 1

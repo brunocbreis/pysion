@@ -530,3 +530,26 @@ class Composition:
         self, published_value: Tool, tool_in: Tool, source_in: str
     ) -> Composition:
         return self.connect(published_value, tool_in, "Value", source_in)
+
+    def to_macro(
+        self,
+        name: str,
+        type: Literal["macro", "group"] = "macro",
+        add_to_comp: bool = False,
+    ) -> Macro:
+        macro = Macro(name, type)
+
+        if self.tools:
+            macro.add_tools(*[tool for tool in self.tools.values()])
+
+        if self.modifiers:
+            macro.add_tool(*[operator for operator in self.modifiers])
+
+        if add_to_comp:
+            self.tools = None
+            self.modifiers = None
+            self.add_tools(macro)
+
+            return macro
+
+        return macro
