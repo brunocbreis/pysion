@@ -23,3 +23,10 @@ def test_add_mask():
     comp = Composition(blur, mask)
 
     compare_result("test_add_mask", comp)
+
+
+def test_offset_position():
+    blur = Tool(ToolID.blur, "Blur")
+    blur.offset_position((1, 1))
+
+    assert blur.position == (1, 1)

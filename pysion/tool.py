@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from .input import Input, Polyline
 from .user_control import UserControl
 from typing import Literal
-from .flow import fusion_coords
+from .flow import fusion_coords, offset_position
 from .color import RGBA
 from .named_table import NamedTable, UnnamedTable
 
@@ -202,6 +202,10 @@ class Tool:
         self._add_user_control(new_user_control)
 
         return self
+
+    # "Setters" and sorts
+    def offset_position(self, offset: tuple[int, int]) -> None:
+        self.position = offset_position(self.position, offset)
 
     # Alternate Constructors
     @classmethod
