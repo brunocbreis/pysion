@@ -169,6 +169,14 @@ def test_to_macro_add_to_comp(comp: Composition):
 def test_add_instance_from_comp(comp: Composition):
     xf_instance = comp.add_instance(comp["MyXF"], (2, 2))
 
-    comp.copy()
-
     assert xf_instance in comp
+
+
+def test_connect_to_instance(comp: Composition):
+    xf: Tool = comp["MyXF"]
+    blur = comp["MyBlur"]
+    xf_instance = comp.add_instance(xf, (2, 2))
+
+    comp.connect(blur, xf_instance)
+
+    assert xf_instance.inputs is not None and xf.inputs is None
