@@ -326,14 +326,14 @@ class Tool:
 
         return self._instances
 
-    def add_instance(self, position: tuple[int, int] = (1, 0)) -> Tool:
-        new_instance = copy(self)
+    def add_instance(
+        self, position: tuple[int, int] = (1, 0), custom_name: str | None = None
+    ) -> Tool:
 
         i = len(self.instances) + 1
+        name = f"{self.name}Instance{i}" if not custom_name else custom_name
 
-        new_instance.name = f"{self.name}Instance{i}"
-        new_instance.source_op = self.name
-        new_instance.position = position
+        new_instance = Tool(self.id, name, position, source_op=self.name)
 
         self.instances.append(new_instance)
 
