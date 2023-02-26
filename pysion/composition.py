@@ -543,7 +543,7 @@ class Composition:
             macro.add_tools(*[tool for tool in self.tools.values()])
 
         if self.modifiers:
-            macro.add_tool(*[operator for operator in self.modifiers])
+            macro.add_tools(*[operator for operator in self.modifiers])
 
         if add_to_comp:
             self.tools = None
