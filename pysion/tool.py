@@ -329,7 +329,9 @@ class Tool:
         return self._instances
 
     def add_instance(
-        self, position: tuple[int, int] = (1, 0), custom_name: str | None = None
+        self,
+        custom_name: str | None = None,
+        position: tuple[int, int] = (1, 0),
     ) -> Tool:
 
         i = len(self.instances) + 1

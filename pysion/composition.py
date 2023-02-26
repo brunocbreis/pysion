@@ -554,11 +554,16 @@ class Composition:
 
         return macro
 
-    def add_instance(self, tool: Tool, position: tuple[int, int] = (1, 0)) -> Tool:
+    def add_instance(
+        self,
+        tool: Tool,
+        custom_name: str | None = None,
+        position: tuple[int, int] = (1, 0),
+    ) -> Tool:
         """Creates an instance of a tool and returns it. The instance behaves
         exactly like a normal tool, except it inherits all of the inputs and values
         of the tool it is an instance of.
 
         Assigning a value to an instance's input will deinstance that input only."""
 
-        return self._add_tool(tool.add_instance(position))
+        return self._add_tool(tool.add_instance(custom_name, position))
