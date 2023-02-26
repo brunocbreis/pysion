@@ -33,6 +33,7 @@ class Tool:
     output: str = "Output"
     user_controls: UnnamedTable[str, UserControl] | None = None
     source_op: str | None = None
+    pass_through: Literal[True, None] = None
 
     def __post_init__(self):
         self._instances: list[Tool] | None = None
@@ -61,6 +62,7 @@ class Tool:
             ViewInfo=self.position_nt,
             UserControls=user_controls,
             SourceOp=self.source_op,
+            PassThrough=self.pass_through,
             force_indent=True,
         )
 
