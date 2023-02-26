@@ -1,4 +1,5 @@
 from __future__ import annotations
+from copy import copy
 from dataclasses import dataclass
 from .input import Input, Polyline
 from .user_control import UserControl
@@ -31,6 +32,10 @@ class Tool:
     inputs: UnnamedTable[str, Input] | None = None
     output: str = "Output"
     user_controls: UnnamedTable[str, UserControl] | None = None
+    source_op: str | None = None
+
+    def __post_init__(self):
+        self._instances: list[Tool] | None = None
 
     # Renderers
     def render(self) -> NamedTable:
@@ -55,6 +60,7 @@ class Tool:
             Inputs=inputs,
             ViewInfo=self.position_nt,
             UserControls=user_controls,
+            SourceOp=self.source_op,
             force_indent=True,
         )
 
@@ -312,3 +318,23 @@ class Tool:
         ).add_color_input(color, suffix="1")
 
         return text_plus
+
+    @property
+    def instances(self) -> list[Tool]:
+        if self._instances is None:
+            self._instances = []
+
+        return self._instances
+
+    def add_instance(self, position: tuple[int, int] = (1, 0)) -> Tool:
+        new_instance = copy(self)
+
+        i = len(self.instances) + 1
+
+        new_instance.name = f"{self.name}Instance{i}"
+        new_instance.source_op = self.name
+        new_instance.position = position
+
+        self.instances.append(new_instance)
+
+        return new_instance

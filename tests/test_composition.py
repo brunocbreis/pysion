@@ -164,3 +164,11 @@ def test_to_macro_add_to_comp(comp: Composition):
 
     assert group in comp
     assert len(comp.tools) == 1
+
+
+def test_add_instance_from_comp(comp: Composition):
+    xf_instance = comp.add_instance(comp["MyXF"], (2, 2))
+
+    comp.copy()
+
+    assert xf_instance in comp

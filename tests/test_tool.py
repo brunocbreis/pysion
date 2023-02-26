@@ -30,3 +30,10 @@ def test_offset_position():
     blur.offset_position((1, 1))
 
     assert blur.position == (1, 1)
+
+
+def test_instance():
+    blur = Tool(ToolID.blur, "Blur")
+    blur_instance = blur.add_instance()
+
+    assert blur.name == blur_instance.source_op == "Blur"

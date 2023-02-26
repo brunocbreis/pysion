@@ -553,3 +553,6 @@ class Composition:
             return macro
 
         return macro
+
+    def add_instance(self, tool: Tool, position: tuple[int, int] = (1, 0)) -> Tool:
+        return self._add_tool(tool.add_instance(position))
