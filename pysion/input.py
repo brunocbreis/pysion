@@ -52,6 +52,7 @@ class Polyline:
 
     def __post_init__(self) -> None:
         self._inputs: list[Input] | None = None
+        self.expressions: list[str] | None = None
 
     def _render(self) -> None:
 
@@ -62,7 +63,11 @@ class Polyline:
         for i, (px, py) in enumerate(self.points):
             pname = f"Point{i}"
 
-            points.append(Input(pname, value=(px, py)))
+            if not self.expressions:
+                points.append(Input(pname, value=(px, py)))
+            else:
+                points.append(Input(pname, expression=self.expressions[i]))
+
             pub_ids.append(UnnamedTable(PublishID=pname))
 
         polyline.value["Points"] = pub_ids
@@ -78,6 +83,21 @@ class Polyline:
         self._render()
         return self._inputs
 
-    # def __repr__(self) -> str:
-    #     return "".join(repr(i) for i in self.inputs)
-    # commenting lines above bc useless.
+    @classmethod
+    def with_expression(
+        cls, points: list[tuple[float, float]], x: str, y: str, replace: str = "POINT"
+    ) -> Polyline:
+        """Create a Polyline with an expression for each point. The 'replace' argument value will
+        be replaced with each point value.
+
+        Example: x = POINT+.2, y=.5
+        will generate the following expression: Point([xvalue]+.2, .5)"""
+
+        new_poly = Polyline(points)
+
+        new_poly.expressions = [
+            f"Point({x.replace(replace, p[0])}, {y.replace(replace, p[1])})"
+            for p in points
+        ]
+
+        return new_poly
