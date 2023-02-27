@@ -100,6 +100,7 @@ class Macro:
         input_name: str,
         pretty_name: str | None = None,
         default_value: Any | None = None,
+        fusion_name: str | None = None,
         page: str | None = None,
         control_group: int | None = None,
     ) -> Macro:
@@ -118,6 +119,8 @@ class Macro:
         - default_value: Any | None
             An optional value to be the default. If left blank, will try to use the current
             input value in the tool.
+        - fusion_name : str
+            An optional name for manually guaranteeing that inputs aren't being overwritten.
         - page : str | None = None
             Optional page name.
         - control_group : int | None
@@ -144,7 +147,7 @@ class Macro:
 
         new_instance = InstanceInput(
             pretty_name=pretty_name,
-            fusion_name=f"{input_name}Instance",
+            fusion_name=f"{input_name}Instance" if not fusion_name else fusion_name,
             source_operator=tool.name,
             source=input_name,
             default=default_value,
