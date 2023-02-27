@@ -169,10 +169,14 @@ class Composition:
         i = 1
         name = f"{tool_id}{i}"
 
-        if not self.tools:
+        names = []
+        if not self.tools and not self.modifiers:
             return name
+        if self.tools:
+            names += [name for name in self.tools.keys()]
+        if self.modifiers:
+            names += [name for name in self.modifiers.keys()]
 
-        names = self.tools.keys()
         while name in names:
             i += 1
             name = f"{tool_id}{i}"
@@ -514,6 +518,16 @@ class Composition:
         tool.add_source_input(input, name, "Value")
 
         return self._add_modifier(new_published_value)
+
+    def modify_with(
+        self,
+        modifier_id: str,
+        tool: Tool,
+        input: str,
+        value: int | float | tuple[int | float, int | float] | str | FuID,
+        modifier_output: str = "Value",
+    ):
+        ...
 
     def connect(
         self,
