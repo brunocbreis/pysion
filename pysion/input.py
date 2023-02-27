@@ -96,7 +96,7 @@ class Polyline:
         new_poly = Polyline(points)
 
         new_poly.expressions = [
-            f"Point({x.replace(replace, p[0])}, {y.replace(replace, p[1])})"
+            f"Point({x.replace(replace, str(p[0]))}, {y.replace(replace, str(p[1]))})"
             for p in points
         ]
 
