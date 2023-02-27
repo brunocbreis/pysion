@@ -3,7 +3,7 @@ from .tool import Tool
 from dataclasses import dataclass
 from .input import Input
 from .named_table import UnnamedTable, NamedTable
-from typing import Literal
+from typing import Literal, Any
 from .flow import fusion_coords
 from .color import RGBA
 
@@ -99,17 +99,45 @@ class Macro:
         tool: Tool,
         input_name: str,
         pretty_name: str | None = None,
+        default_value: Any | None = None,
         page: str | None = None,
         control_group: int | None = None,
     ) -> Macro:
+        """Creates and adds an InstanceInput to a Macro.
+
+        Arguments
+        ----------
+        - tool : Tool
+            A Tool that should be in the Macro.
+        - input_name : str
+            The name of the original input that will be instantiated. Should be an input present
+            in the tool.
+        - pretty_name: str | None
+            An optional display name for the input in the Inspector. Can have spaces. If left blank,
+            will be the same as input_name.
+        - default_value: Any | None
+            An optional value to be the default. If left blank, will try to use the current
+            input value in the tool.
+        - page : str | None = None
+            Optional page name.
+        - control_group : int | None
+            Optional control group for inputs like Color that are treated as one.
+
+        Returns
+        ----
+        Self.
+
+        """
+
         if self.inputs is None:
             self.inputs = UnnamedTable(force_indent=True)
 
-        try:
-            input: Input = tool.inputs[input_name]
-            default_value = input.value
-        except KeyError:
-            default_value = None
+        if default_value is None:
+            try:
+                input: Input = tool.inputs[input_name]
+                default_value = input.value
+            except KeyError:
+                default_value = None
 
         if pretty_name is None:
             pretty_name = input_name
