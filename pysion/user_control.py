@@ -8,6 +8,7 @@ class UserControl:
     pretty_name: str
     input_control: str
     data_type: str
+    preview_control: str | None = None
     is_integer: bool | None = False
     page: str | None = None
     default: int | float | str | None = None
@@ -27,6 +28,7 @@ class UserControl:
             LINKS_Name=self.pretty_name,
             LINKID_DataType=self.data_type,
             INPID_InputControl=self.input_control,
+            INPID_PreviewControl=self.preview_control,
             INP_Integer=self.is_integer,
             ICS_ControlPage=self.page,
             INP_MinScale=self.min_scale,
