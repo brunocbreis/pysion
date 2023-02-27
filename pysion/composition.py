@@ -524,10 +524,14 @@ class Composition:
         modifier_id: str,
         tool: Tool,
         input: str,
-        value: int | float | tuple[int | float, int | float] | str | FuID,
         modifier_output: str = "Value",
-    ):
-        ...
+    ) -> Modifier:
+        name = self._auto_name_tool(modifier_id)
+        modifier = Modifier(modifier_id, name)
+
+        tool.add_source_input(input, modifier.name, modifier_output)
+
+        return self._add_modifier(modifier)
 
     def connect(
         self,

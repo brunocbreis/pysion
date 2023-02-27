@@ -180,3 +180,11 @@ def test_connect_to_instance(comp: Composition):
     comp.connect(blur, xf_instance)
 
     assert xf_instance.inputs is not None and xf.inputs is None
+
+
+def test_modify_with(comp: Composition):
+    xf = comp["MyXF"]
+    offset = comp.modify_with("Offset", xf, "Center", "Position")
+
+    assert offset.name == "Offset1"
+    assert xf["Center"].source == "Position"
