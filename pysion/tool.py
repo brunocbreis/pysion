@@ -157,6 +157,28 @@ class Tool:
 
         return self
 
+    def add_published_polyline_with_expression(
+        self,
+        points: list[tuple[float, float]],
+        expression_x: str,
+        expression_y: str,
+        replace_value: str = "POINT",
+    ) -> Tool:
+        """Create a Polyline with an expression for each point. The 'replace_value' argument will
+        be replaced with each point value.
+
+        Example: x = POINT+.2, y=.5
+        will generate the following expression: Point([x_value]+.2, .5)"""
+
+        poly = Polyline.with_expression(
+            points, expression_x, expression_y, replace_value
+        )
+
+        for input in poly.inputs:
+            self.add_input(input)
+
+        return self
+
     def add_color_input(self, color: RGBA | None, prefix: str = "", suffix: str = ""):
         """Adds color input from RGBA. Different Prefixes and Suffixes are added to color inputs in Fusion.
         Backgrounds usually default to TopLeft[Color] for solid fills.
