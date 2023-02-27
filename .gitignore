@@ -12,3 +12,5 @@ docs/
 exports/
 .coverage
 htmlcov/
+shape_madness.py
+tox.ini
