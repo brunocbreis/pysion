@@ -1,5 +1,5 @@
 { 
-	Tools = { 
+	Tools = ordered() { 
 		PolylineMask1 = PolylineMask { 
 			Inputs = { 
 				Polyline = Input { 

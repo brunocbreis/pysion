@@ -22,6 +22,8 @@ def test_add_mask():
 
     comp = Composition(blur, mask)
 
+    comp.copy()
+
     compare_result("test_add_mask", comp)
 
 

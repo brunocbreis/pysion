@@ -81,7 +81,7 @@ class BezierSpline:
         if len(self.keyframes) == 1:
             return
 
-        keyframes: list[tuple[int | float, Keyframe]] = self.keyframes.ordered()
+        keyframes: list[tuple[int | float, Keyframe]] = self.keyframes.as_ordered_list()
         for i, (frame, kf) in enumerate(keyframes):
             if i == 0:
                 # rh only
@@ -142,7 +142,7 @@ class BezierSpline:
         self._calculate_hands()
         ordered_keyframes = UnnamedTable()
 
-        for frame, keyframe in self.keyframes.ordered():
+        for frame, keyframe in self.keyframes.as_ordered_list():
             ordered_keyframes[frame] = keyframe
 
         return ordered_keyframes

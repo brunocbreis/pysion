@@ -119,7 +119,9 @@ class NamedTable(UserDict):
         # print("Doesn't need to indent.")
         return False
 
-    def ordered(self, reverse: bool = False) -> list[tuple[str | int | float, Any]]:
+    def as_ordered_list(
+        self, reverse: bool = False
+    ) -> list[tuple[str | int | float, Any]]:
         """Returns the NamedTable as a sorted list of tuple[key, val], by keys.
         Useful for a table of keyframes that need to be sorted by time."""
 
@@ -139,8 +141,15 @@ class NamedTable(UserDict):
 
 
 class UnnamedTable(NamedTable):
-    def __init__(self, dict: NamedTable = None, /, force_indent=False, **kwargs):
+    def __init__(
+        self, dict: NamedTable = None, /, force_indent=False, ordered=False, **kwargs
+    ):
+        self.ordered = ordered
         super().__init__("", dict, force_indent=force_indent, **kwargs)
+
+    def render(self, level) -> str:
+        ordered_str = "ordered() " if self.ordered else ""
+        return ordered_str + super().render(level)
 
 
 class IndentedList(UserList):

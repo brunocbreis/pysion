@@ -1,5 +1,5 @@
 { 
-	Tools = { 
+	Tools = ordered() { 
 		TestMacro = MacroOperator { 
 			Inputs = { 
 				TopLeftRedInstance = InstanceInput { 
@@ -37,7 +37,7 @@
 					Source = "Output", 
 				}, 
 			}, 
-			Tools = { 
+			Tools = ordered() { 
 				TestBG = Background { 
 					Inputs = { 
 						TopLeftRed = Input { Value = 1, }, 

@@ -142,7 +142,7 @@ class Composition:
             self.active_tool_name = self._last_added_tool.name
 
     def _render_operators(self) -> UnnamedTable:
-        operators = UnnamedTable(force_indent=True)
+        operators = UnnamedTable(force_indent=True, ordered=True)
 
         if self.tools:
             operators.update(

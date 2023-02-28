@@ -1,5 +1,5 @@
 { 
-	Tools = { 
+	Tools = ordered() { 
 		TestBG = Background { 
 			Inputs = { 
 				TopLeftRed = Input { Value = 1, }, 
