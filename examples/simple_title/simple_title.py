@@ -9,7 +9,9 @@ comp = pysion.Composition()
 title = comp.add_text(
     name="MyTitle",
     text="This is my title",
-    font_face="Forma DJR Display",
+    # font_face="Forma DJR Display",
+    # ^ this is what's shown in the gif, but the line below works everywhere:
+    font_face="Open Sans",
     color=RGBA(red=0.15, green=0.2, blue=0.9),
 )
 
