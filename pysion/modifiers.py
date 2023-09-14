@@ -43,9 +43,9 @@ class XYPathModifier(Modifier):
         assert isinstance(value, tuple), "Usage ="
         assert len(value) == 2, "To skip a keyframe, use None value. Ex: (.5,None)"
 
-        if value[0]:
+        if value[0] is not None:
             self.x_spline[key] = value[0]
-        if value[1]:
+        if value[1] is not None:
             self.y_spline[key] = value[1]
 
     def __getitem__(self, key: str) -> tuple[int | float | None, int | float | None]:
