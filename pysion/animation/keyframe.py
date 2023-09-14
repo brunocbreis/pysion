@@ -6,7 +6,7 @@ from .curve import Curve
 
 class Keyframe(UserDict):
     def __init__(
-        self, frame: int | float, value: int | float, curve: Curve = Curve.linear()
+        self, frame: int | float, value: int | float | str, curve: Curve = Curve.linear()
     ) -> None:
         self.frame = frame
         self.value = value
@@ -33,9 +33,10 @@ class Keyframe(UserDict):
         hands = self._render_hands()
 
         if flags is None:
-            return f"{{ {self.value},{hands}}}"
+            return f"{{ {self.frame},{hands}Value= Text {{ Value= \"{self.value}\" }}}}" if isinstance(self.value, str) else f"{{ {self.value},{hands} }}"
 
-        return f"{{ {self.value},{hands}Flags = {flags} }}"
+        return f"{{ {self.frame},{hands}Flags = {flags}Value= Text {{ Value= \"{self.value}\" }}}}" if isinstance(self.value, str) else f"{{ {self.value},{hands}Flags = {flags} }}"
+
 
     # Private methods
     def _render_flags(self) -> UnnamedTable | None:
