@@ -19,9 +19,8 @@ class BezierSpline:
         if self.default_curve is None:
             self.default_curve = Curve.linear()
 
-    def __setitem__(self, key: int | float, value: int | float) -> None:
+    def __setitem__(self, key: int | float, value: int | float | str) -> None:
         assert isinstance(key, int) | isinstance(key, float), "Frame must be a number."
-
         self.add_keyframes([(key, value)], self.default_curve)
 
     def __getitem__(self, key: int | float) -> Keyframe:
@@ -38,7 +37,7 @@ class BezierSpline:
 
     def add_keyframes(
         self,
-        pairs: list[tuple[int | float, int | float]],
+        pairs: list[tuple[int | float, int | float | str]],
         curve: Curve | None = None,
     ) -> BezierSpline:
         if not pairs:
